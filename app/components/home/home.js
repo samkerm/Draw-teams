@@ -13,7 +13,7 @@ import { NavigationActions } from 'react-navigation';
 
 export default class Home extends Component {
   static navigationOptions = {
-    header: null
+    headerLeft: null
   };
 
   constructor(props) {
@@ -41,7 +41,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{ this.state.user.name == null ? 'Hi mr unknown' : this.state.user.name }</Text>
+        <Text>Welcome</Text>
       </View>
     );
   }

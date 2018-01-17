@@ -10,9 +10,11 @@ import {
   Alert
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { Input } from './input';
-import { Button } from './button';
+import { Input } from '../global/input';
+import { Button } from '../global/button';
 import firebase from 'firebase';
+
+let app = Object;
 
 export default class Login extends Component<{}> {
   static navigationOptions = {
@@ -25,7 +27,7 @@ export default class Login extends Component<{}> {
     authenticating: false
   }
   componentWillMount() {
-    const app = this;
+    app = this;
     // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyApyr_GVy-5rC4s0laqcPb-SKdAtU70FBU",
@@ -38,9 +40,21 @@ export default class Login extends Component<{}> {
     const firebaseApp = firebase.initializeApp(firebaseConfig);
     const { navigate } = this.props.navigation;
     firebase.auth().onAuthStateChanged(function(user) {
+      app.setState({ authenticating: false });
+
       if (user) {
-        navigate('Home')
-        navigate
+        // Get the Database service for the default app
+        const defaultDatabase = firebase.database();
+        defaultDatabase.goOnline();
+        const userRef = defaultDatabase.ref('users');
+        userRef.once('value').then(function(snapshot) {
+          console.log(snapshot.val());
+          navigate('Profile');
+        });
+        if (user.displayName && user.email && user.emailVerified && user.phoneNumber)
+        {
+          navigate('Home');
+        }
       } else {
 
       }
@@ -56,7 +70,7 @@ export default class Login extends Component<{}> {
       );
     }
     return (
-      <View style={styles.form}>
+      <View style={ styles.form }>
         <Input
           placeholder={ 'Enter your email...' }
           label={ 'Email' }
@@ -79,7 +93,6 @@ export default class Login extends Component<{}> {
   }
 
   onPressSignIn() {
-    const app = this;
     app.setState({ authenticating: true });
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       app.showAlert(error.code, error.message);
@@ -89,7 +102,6 @@ export default class Login extends Component<{}> {
   }
 
   onPressSignUp() {
-    const app = this;
     app.setState({ authenticating: true });
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       app.showAlert(error.code, error.message);
@@ -98,7 +110,6 @@ export default class Login extends Component<{}> {
   }
 
   showAlert(title, message) {
-    const app = this;
     Alert.alert(
       title,
       message,
