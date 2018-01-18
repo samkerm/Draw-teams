@@ -13,7 +13,8 @@ import { NavigationActions } from 'react-navigation';
 
 export default class Home extends Component {
   static navigationOptions = {
-    headerLeft: null
+    headerLeft: null,
+    gesturesEnabled: false,
   };
 
   constructor(props) {

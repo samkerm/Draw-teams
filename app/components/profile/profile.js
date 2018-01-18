@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   AppRegistry,
   Alert,
@@ -12,6 +13,7 @@ import firebase from 'firebase';
 import { StackNavigator, HeaderBackButton } from 'react-navigation';
 import { Input } from '../global/input';
 import { Button } from '../global/button';
+import LabledSlider from '../global/slider';
 
 let app = Object;
 
@@ -20,6 +22,7 @@ export default class Profile extends Component {
   static navigationOptions = {
     title: 'Setup Your Profile',
     headerLeft: <HeaderBackButton onPress={() => { app.showAlert('Logout', 'Are you sure you want to logout?') }} />,
+    gesturesEnabled: false,
   };
 
   state = {
@@ -32,7 +35,17 @@ export default class Profile extends Component {
     super(props);
     var user = firebase.auth().currentUser;
     this.state = {
-      user: user.uid
+      user: user.uid,
+      displayeName: user.displayeName,
+      ratings: {
+        sport: '5 vs 5 soccer',
+        defence: 0,
+        speed: 0,
+        attack: 0,
+        pass: 0,
+        dribble: 0,
+        goalie: 0
+      }
     };
   }
 
@@ -89,13 +102,29 @@ export default class Profile extends Component {
           onChangeText={ email => this.setState({ email })}
           value={ this.state.email }
         />
-        <Input
-          placeholder={ 'Enter your password...' }
-          label={ 'Password' }
-          secureTextEntry
-          onChangeText={ password => this.setState({ password })}
-          value={ this.state.password }
-        />
+        <View style={ styles.ratings }>
+          <Text style={ styles.skills }>
+            Skills:
+          </Text>
+          <LabledSlider
+            label={ 'Defence' }
+          />
+          <LabledSlider
+            label={ 'Finish' }
+          />
+          <LabledSlider
+            label={ 'Speed' }
+          />
+          <LabledSlider
+            label={ 'Pass' }
+          />
+          <LabledSlider
+            label={ 'Dribble' }
+          />
+          <LabledSlider
+            label={ 'GK' }
+          />
+        </View>
         <Button onPress={ () => this.registerUser() }>
           Register
         </Button>
@@ -108,8 +137,21 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     padding: 20
-
   },
+  skills: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 20
+  },
+  ratings: {
+    marginTop: 10,
+    flex: 1,
+    flexDirection: 'column'
+  },
+  slider: {
+    borderColor: '#AAA',
+    borderWidth: 2
+  }
 });
 
 AppRegistry.registerComponent('Profile', () => MyApp);

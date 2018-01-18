@@ -39,24 +39,17 @@ export default class Login extends Component<{}> {
     };
     const firebaseApp = firebase.initializeApp(firebaseConfig);
     const { navigate } = this.props.navigation;
+    app.setState({ authenticating: true });
     firebase.auth().onAuthStateChanged(function(user) {
       app.setState({ authenticating: false });
-
       if (user) {
-        // Get the Database service for the default app
-        const defaultDatabase = firebase.database();
-        defaultDatabase.goOnline();
-        const userRef = defaultDatabase.ref('users');
-        userRef.once('value').then(function(snapshot) {
-          console.log(snapshot.val());
-          navigate('Profile');
-        });
         if (user.displayName && user.email && user.emailVerified && user.phoneNumber)
         {
           navigate('Home');
         }
+        navigate('Profile');
       } else {
-
+        navigate('Profile');
       }
     });
   }
