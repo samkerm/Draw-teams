@@ -108,21 +108,27 @@ export default class Profile extends Component {
           </Text>
           <LabledSlider
             label={ 'Defence' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {defence: value} )}) }
           />
           <LabledSlider
-            label={ 'Finish' }
+            label={ 'Attack' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {attack: value} )}) }
           />
           <LabledSlider
             label={ 'Speed' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {speed: value} )}) }
           />
           <LabledSlider
             label={ 'Pass' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {pass: value} )}) }
           />
           <LabledSlider
             label={ 'Dribble' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {dribble: value} )}) }
           />
           <LabledSlider
-            label={ 'GK' }
+            label={ 'Goalie' }
+            onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {goalie: value} )}) }
           />
         </View>
         <Button onPress={ () => this.registerUser() }>
