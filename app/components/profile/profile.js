@@ -33,9 +33,10 @@ export default class Profile extends Component {
 
   constructor(props) {
     super(props);
-    var user = firebase.auth().currentUser;
+
+    const user = firebase.auth().currentUser;
     this.state = {
-      user: user.uid,
+      userId: user.uid,
       displayeName: user.displayeName,
       ratings: {
         sport: '5 vs 5 soccer',
@@ -57,6 +58,10 @@ export default class Profile extends Component {
     });
   }
 
+  componentDidMount() {
+    this.refs.DisplayInput.focus();
+  }
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', function() {
       return false;
@@ -72,34 +77,90 @@ export default class Profile extends Component {
     });
   }
 
-  // Double check for back buttonn logout.
-  showAlert(title, message) {
+  showDisplayNameAlert(title, message) {
     Alert.alert(
       title,
       message,
       [
-        {text: 'Stay', style: 'cancel'},
-        {text: 'Go back', onPress: () => app.goBack()},
+        {text: 'Ok', style: 'cancel', onPress: () => this.refs.DisplayInput.focus()},
+      ],
+      { cancelable: false }
+    )
+  }
+
+  showFirebaseAlert(title, message) {
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'Ok', style: 'cancel'},
       ],
       { cancelable: false }
     )
   }
 
   registerUser() {
-    firebase.database().ref('users/' + this.state.userId).set({
-    username: name,
-    email: email,
-    profile_picture : imageUrl
-  });
+    // Make sure the display name is filled but its not important if the ratings are not filled
+    if (this.state.displayeName && this.state.displayeName !== '')
+    {
+      firebase.auth().currentUser.updateProfile({
+        displayName: app.state.displayeName,
+      }).then(function() {
+        firebase.database().ref('users/' + app.state.userId).set({
+          displayeName: app.state.displayeName,
+          ratings: app.state.ratings,
+        })
+        .then(function() {
+          console.log('User synchronization succeeded3');
+          const ratingsRef = firebase.database().ref('ratings/');
+          const newRatingRef = ratingsRef.push();
+          newRatingRef.set({
+            userId: app.state.userId,
+            ratedBy: app.state.userId,
+            date: new Date().toUTCString(),
+            sport: '5 vs 5 soccer',
+            defence: app.state.ratings.defence,
+            speed: app.state.ratings.speed,
+            attack: app.state.ratings.attack,
+            pass: app.state.ratings.pass,
+            dribble: app.state.ratings.dribble,
+            goalie: app.state.ratings.goalie
+          })
+          .then(function() {
+            app.showFirebaseAlert('Ratings synchronization succeeded!');
+            if (firebase.auth().currentUser.photoURL)
+            {
+              app.props.navigation.navigate('Home');
+            }
+            else {
+              app.props.navigation.navigate('Avatar');
+            }
+          })
+          .catch(function(error) {
+            app.showFirebaseAlert('Ratings synchronization failed', error.message);
+          });
+        })
+        .catch(function(error) {
+          app.showFirebaseAlert('User synchronization failed', error.message);
+        });
+      }, function(error) {
+        app.showFirebaseAlert('Failed updating user info', error.message);
+      });
+    }
+    else
+    {
+      app.showDisplayNameAlert('Incomplete!', 'Make sure you at least have filled up the display name before proceeding.');
+    }
   }
 
   render() {
     return (
       <View style={ styles.title }>
         <Input
+          ref='DisplayInput'
           placeholder={ 'Enter your display name...' }
           label={ 'Display Name' }
-          onChangeText={ email => this.setState({ email })}
+          onChangeText={ name => this.setState({ displayeName: name.trim() })}
           value={ this.state.email }
         />
         <View style={ styles.ratings }>

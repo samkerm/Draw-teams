@@ -28,28 +28,20 @@ export default class Login extends Component<{}> {
   }
   componentWillMount() {
     app = this;
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyApyr_GVy-5rC4s0laqcPb-SKdAtU70FBU",
-      authDomain: "draw-teams.firebaseapp.com",
-      databaseURL: "https://draw-teams.firebaseio.com",
-      projectId: "draw-teams",
-      storageBucket: "draw-teams.appspot.com",
-      messagingSenderId: "853780675945"
-    };
-    const firebaseApp = firebase.initializeApp(firebaseConfig);
     const { navigate } = this.props.navigation;
     app.setState({ authenticating: true });
     firebase.auth().onAuthStateChanged(function(user) {
       app.setState({ authenticating: false });
       if (user) {
-        if (user.displayName && user.email && user.emailVerified && user.phoneNumber)
-        {
+        if (user.displayName && user.photoURL) {
           navigate('Home');
         }
-        navigate('Profile');
-      } else {
-        navigate('Profile');
+        else if (!user.displayName) {
+          navigate('Profile');
+        }
+        else if (!user.photoURL) {
+          navigate('Avatar');
+        }
       }
     });
   }
@@ -67,14 +59,14 @@ export default class Login extends Component<{}> {
         <Input
           placeholder={ 'Enter your email...' }
           label={ 'Email' }
-          onChangeText={ email => this.setState({ email })}
+          onChangeText={ email => this.setState({ email: email.trim() })}
           value={ this.state.email }
         />
         <Input
           placeholder={ 'Enter your password...' }
           label={ 'Password' }
           secureTextEntry
-          onChangeText={ password => this.setState({ password })}
+          onChangeText={ password => this.setState({ password: password.trim() })}
           value={ this.state.password }
         />
         <Button onPress={ () => this.onPressSignIn()}>

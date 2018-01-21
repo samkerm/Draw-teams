@@ -13,10 +13,6 @@ class LabledSlider extends Component {
     value: 0
   }
 
-  setvalue(value) {
-    console.log(value);
-  }
-
   constructor(props) {
    super(props)
   }

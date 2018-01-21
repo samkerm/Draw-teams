@@ -1,6 +1,6 @@
 /* @flow */
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -8,20 +8,27 @@ import {
   TextInput
 } from 'react-native';
 
-const Input =({ label, value, onChangeText, placeholder, secureTextEntry }) => {
-  return (
-    <View style={ styles.container }>
-      <Text>{ label }</Text>
-      <TextInput
-        autocCorrect={ false }
-        onChangeText={ onChangeText }
-        placeholder={ placeholder }
-        style={ styles.input }
-        secureTextEntry={ secureTextEntry }
-        value={ value }
-      />
-    </View>
-  );
+export default class Input extends Component {
+  constructor(props) {
+   super(props)
+  }
+
+  focus() {
+    this.refs.textInput.focus();
+  }
+
+  render() {
+    return (
+      <View style={ styles.container }>
+        <Text>{ this.props.label }</Text>
+        <TextInput
+          {...this.props}
+          style={ styles.input }
+          ref={'textInput'}
+        />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
