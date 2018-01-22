@@ -21,7 +21,7 @@ export default class Profile extends Component {
 
   static navigationOptions = {
     title: 'Setup Your Profile',
-    headerLeft: <HeaderBackButton onPress={() => { app.showAlert('Logout', 'Are you sure you want to logout?') }} />,
+    headerLeft: <HeaderBackButton onPress={() => { app.logoutAlert('Logout', 'Are you sure you want to logout?') }} />,
     gesturesEnabled: false,
   };
 
@@ -68,13 +68,25 @@ export default class Profile extends Component {
     });
   }
 
-  goBack() {
+  logout() {
     firebase.auth().signOut()
     .then(function() {
-      app.props.navigation.goBack(null);
+      app.props.navigation.navigate('Login');
     }, function(error) {
-      console.error(error);
+      this.showAlert('Sign Out Error', error.message);
     });
+  }
+
+  logoutAlert(title, message) {
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'Stay', style: 'cancel'},
+        {text: 'Logout', style: 'destructive', onPress: () => app.logout()},
+      ],
+      { cancelable: false }
+    )
   }
 
   showDisplayNameAlert(title, message) {

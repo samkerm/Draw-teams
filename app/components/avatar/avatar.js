@@ -47,8 +47,8 @@ export default class Avatar extends Component {
       title,
       message,
       [
-        {text: 'Stay', style: 'default'},
-        {text: 'Logout', onPress: () => app.logout()},
+        {text: 'Stay', style: 'cancel'},
+        {text: 'Logout', style: 'destructive', onPress: () => app.logout()},
       ],
       { cancelable: false }
     )

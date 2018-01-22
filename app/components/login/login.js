@@ -46,6 +46,10 @@ export default class Login extends Component<{}> {
     });
   }
 
+  focusPasswordInput() {
+    app.refs.PasswordInput.focus();
+  }
+
   renderCurrentState() {
     if (this.state.authenticating) {
       return (
@@ -54,22 +58,29 @@ export default class Login extends Component<{}> {
         </View>
       );
     }
+
     return (
       <View style={ styles.form }>
         <Input
           placeholder={ 'Enter your email...' }
           label={ 'Email' }
+          returnKeyType={'next'}
+          keyboardType={'email-address'}
+          onSubmitEditing={this.focusPasswordInput}
           onChangeText={ email => this.setState({ email: email.trim() })}
           value={ this.state.email }
         />
         <Input
+          ref='PasswordInput'
           placeholder={ 'Enter your password...' }
           label={ 'Password' }
+          returnKeyType={'send'}
           secureTextEntry
           onChangeText={ password => this.setState({ password: password.trim() })}
           value={ this.state.password }
+          onSubmitEditing={ () => this.onPressSignIn() }
         />
-        <Button onPress={ () => this.onPressSignIn()}>
+        <Button onPress={ () => this.onPressSignIn() }>
           Login
         </Button>
         <Text>{ this.state.warning }</Text>
