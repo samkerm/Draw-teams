@@ -37,8 +37,7 @@ export default class Login extends Component {
     const { navigate } = this.props.navigation;
     app.setState({ authenticating: true });
     firebase.auth().onAuthStateChanged(function(user) {
-      app.setState({ authenticating: false });
-      if (user) {
+      if (user && app.state.authenticating) {
         if (user.displayName && user.photoURL) {
           navigate('Home');
         }
@@ -49,6 +48,7 @@ export default class Login extends Component {
           navigate('Avatar');
         }
       }
+      app.setState({ authenticating: false });
     });
   }
 

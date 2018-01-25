@@ -15,7 +15,7 @@ import { Input } from '../global/input';
 import { Button } from '../global/button';
 import LabledSlider from '../global/slider';
 
-let app = Object;
+let app;
 
 export default class Profile extends Component {
 
@@ -31,7 +31,7 @@ export default class Profile extends Component {
     const user = firebase.auth().currentUser;
     this.state = {
       userId: user.uid,
-      displayeName: user.displayeName,
+      displayName: user.displayName,
       ratings: {
         sport: '5 vs 5 soccer',
         defence: 0,
@@ -107,13 +107,13 @@ export default class Profile extends Component {
 
   registerUser() {
     // Make sure the display name is filled but its not important if the ratings are not filled
-    if (this.state.displayeName && this.state.displayeName !== '')
+    if (this.state.displayName && this.state.displayName !== '')
     {
       firebase.auth().currentUser.updateProfile({
-        displayName: app.state.displayeName,
+        displayName: app.state.displayName,
       }).then(function() {
         firebase.database().ref('users/' + app.state.userId).set({
-          displayeName: app.state.displayeName,
+          displayName: app.state.displayName,
           ratings: app.state.ratings,
         })
         .then(function() {
@@ -166,7 +166,7 @@ export default class Profile extends Component {
           ref='DisplayInput'
           placeholder={ 'Enter your display name...' }
           label={ 'Display Name' }
-          onChangeText={ name => this.setState({ displayeName: name.trim() })}
+          onChangeText={ name => this.setState({ displayName: name.trim() })}
           value={ this.state.email }
         />
         <View style={ styles.ratings }>

@@ -10,8 +10,9 @@ import {
   AppRegistry,
   BackHandler,
   Alert,
-  ImagePickerIOS,
-  Image
+  CameraRoll,
+  Image,
+  ScrollView
 } from 'react-native';
 import { Button } from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
@@ -28,12 +29,9 @@ export default class Avatar extends Component {
 
   constructor() {
     super();
-
     this.state = {
-      imageURL: null
+      photos: []
     }
-
-    this.pickImage = this.pickImage.bind(this);
   }
 
   componentWillMount() {
@@ -71,28 +69,43 @@ export default class Avatar extends Component {
     )
   }
 
-  componentDidMount() {
-    // this.pickImage();
-  }
+  _handleButtonPress = () => {
+   CameraRoll.getPhotos({
+       first: 20,
+       assetType: 'Photos',
+     })
+     .then(r => {
+       this.setState({ photos: r.edges });
+     })
+     .catch((err) => {
+        //Error Loading Images
+     });
+  };
 
-  pickImage() {
-    // openSelectDialog(config, successCallback, errorCallback);
-    ImagePickerIOS.openSelectDialog({}, imageUri => {
-      this.setState({ image: imageUri });
-    }, error => console.error(error));
+  setAvatar() {
+    app.props.navigation.navigate('Home');
   }
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-      <Button onPress={this.pickImage}>
-        Pick image
-      </Button>
-        {this.state.image?
-          <Image style={{ flex: 1 }} source={{ uri: this.state.image }} /> :
-          null
-        }
-      </View>
+      <View>
+       <Button onPress={this._handleButtonPress}>Load Images</Button>
+       <ScrollView>
+         {this.state.photos.map((p, i) => {
+         return (
+           <Image
+             key={i}
+             style={{
+               width: 300,
+               height: 100,
+             }}
+             source={{ uri: p.node.image.uri }}
+           />
+         );
+       })}
+       </ScrollView>
+       <Button onPress={this.setAvatar}>Set Avatar</Button>
+     </View>
     );
   }
 }
@@ -100,6 +113,8 @@ export default class Avatar extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 });
 

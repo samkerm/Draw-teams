@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { Component } from 'react';
 import {
   View,
@@ -10,6 +8,14 @@ import {
 } from 'react-native';
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
+import Teams from '../teams/teams';
+
+let app;
+
+const App = StackNavigator({
+  Teams: { screen: Teams },
+});
 
 export default class Home extends Component {
   static navigationOptions = {
@@ -19,14 +25,28 @@ export default class Home extends Component {
 
   constructor() {
     super();
-    var user = firebase.auth().currentUser;
+    const user = firebase.auth().currentUser;
     this.state = {
-      user: user
+      userId: user.uid
     };
   }
 
   componentWillMount() {
-    console.log(this.state.user);
+    app = this;
+    const userRef = firebase.database().ref('users/' + app.state.userId);
+    userRef.once('value')
+    .then(function(snapshot) {
+      const displayName = snapshot.child('displayName').val() || '';
+      const teamId = snapshot.child('team').val() || '';
+      app.setState({
+        displayName,
+        teamId
+      })
+      if (teamId === '')
+      {
+        app.props.navigation.navigate('Teams');
+      }
+    });
 
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
