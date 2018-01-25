@@ -1,4 +1,4 @@
-/* @flow */
+/* eslint-disable */
 
 import React, { Component } from 'react';
 import {
@@ -17,8 +17,8 @@ export default class Home extends Component {
     gesturesEnabled: false,
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     var user = firebase.auth().currentUser;
     this.state = {
       user: user

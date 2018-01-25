@@ -14,18 +14,24 @@ import { Input } from '../global/input';
 import { Button } from '../global/button';
 import firebase from 'firebase';
 
-let app = Object;
+let app;
 
-export default class Login extends Component<{}> {
+export default class Login extends Component {
   static navigationOptions = {
     header: null,
   };
-  state = {
-    email: '',
-    password: '',
-    warning: '',
-    authenticating: false
+
+  constructor() {
+    super();
+
+    this.state = {
+      email: '',
+      password: '',
+      warning: '',
+      authenticating: false
+    }
   }
+
   componentWillMount() {
     app = this;
     const { navigate } = this.props.navigation;

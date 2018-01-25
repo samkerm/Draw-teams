@@ -1,4 +1,4 @@
-/* @flow */
+'use strict';
 
 import React, { Component } from 'react';
 import {
@@ -24,12 +24,6 @@ export default class Profile extends Component {
     headerLeft: <HeaderBackButton onPress={() => { app.logoutAlert('Logout', 'Are you sure you want to logout?') }} />,
     gesturesEnabled: false,
   };
-
-  state = {
-    email: '',
-    password: '',
-    userId: ''
-  }
 
   constructor(props) {
     super(props);

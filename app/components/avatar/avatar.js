@@ -1,4 +1,6 @@
-/* @flow */
+/* eslint-disable */
+
+'use strict';
 
 import React, { Component } from 'react';
 import {
@@ -7,10 +9,15 @@ import {
   StyleSheet,
   AppRegistry,
   BackHandler,
-  Alert
+  Alert,
+  ImagePickerIOS,
+  Image
 } from 'react-native';
+import { Button } from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
+
+let app;
 
 export default class Avatar extends Component {
   static navigationOptions = {
@@ -18,6 +25,16 @@ export default class Avatar extends Component {
     headerLeft: <HeaderBackButton onPress={() => { app.showAlert('Logout', 'Are you sure you want to logout?') }} />,
     gesturesEnabled: false,
   };
+
+  constructor() {
+    super();
+
+    this.state = {
+      imageURL: null
+    }
+
+    this.pickImage = this.pickImage.bind(this);
+  }
 
   componentWillMount() {
     app = this;
@@ -54,10 +71,27 @@ export default class Avatar extends Component {
     )
   }
 
+  componentDidMount() {
+    // this.pickImage();
+  }
+
+  pickImage() {
+    // openSelectDialog(config, successCallback, errorCallback);
+    ImagePickerIOS.openSelectDialog({}, imageUri => {
+      this.setState({ image: imageUri });
+    }, error => console.error(error));
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Im the MyComponent component</Text>
+      <View style={{ flex: 1 }}>
+      <Button onPress={this.pickImage}>
+        Pick image
+      </Button>
+        {this.state.image?
+          <Image style={{ flex: 1 }} source={{ uri: this.state.image }} /> :
+          null
+        }
       </View>
     );
   }
