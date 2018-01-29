@@ -35,15 +35,13 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 10,
     width: '100%',
-    borderColor: '#eee',
-    borderBottomWidth: 2
   },
   label: {
     padding: 5,
     paddingBottom: 0,
     color: '#333',
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '100',
     width: '100%'
   },
   input: {

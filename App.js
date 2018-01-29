@@ -8,13 +8,13 @@ import Home from './app/components/home/home';
 import Login from './app/components/login/login';
 import Profile from './app/components/profile/profile';
 import Avatar from './app/components/avatar/avatar';
-import Teams from './app/components/teams/teams';
+import Groups from './app/components/groups/groups';
 
 const App = StackNavigator({
   Login: { screen: Login },
   Profile: { screen: Profile },
   Avatar: { screen: Avatar },
-  Teams: { screen: Teams },
+  Groups: { screen: Groups },
   Home: { screen: Home },
 });
 
@@ -23,7 +23,7 @@ export default class MyApp extends Component {
     // Initialize Firebase
     const firebaseConfig = {
       apiKey: 'AIzaSyApyr_GVy-5rC4s0laqcPb-SKdAtU70FBU',
-      authDomain: 'draw-teams.firebaseapp.com',
+      authDomain: 'draw-groups.firebaseapp.com',
       databaseURL: 'https://draw-teams.firebaseio.com',
       projectId: 'draw-teams',
       storageBucket: 'draw-teams.appspot.com',

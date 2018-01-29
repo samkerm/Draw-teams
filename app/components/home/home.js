@@ -9,12 +9,12 @@ import {
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
-import Teams from '../teams/teams';
+import Groups from '../groups/groups';
 
 let app;
 
 const App = StackNavigator({
-  Teams: { screen: Teams },
+  Groups: { screen: Groups },
 });
 
 export default class Home extends Component {
@@ -44,7 +44,7 @@ export default class Home extends Component {
       })
       if (teamId === '')
       {
-        app.props.navigation.navigate('Teams');
+        app.props.navigation.navigate('Groups');
       }
     });
 
