@@ -37,12 +37,12 @@ export default class Home extends Component {
     userRef.once('value')
     .then(function(snapshot) {
       const displayName = snapshot.child('displayName').val() || '';
-      const teamId = snapshot.child('team').val() || '';
+      const groupId = snapshot.child('groupId').val() || '';
       app.setState({
         displayName,
-        teamId
+        groupId
       })
-      if (teamId === '')
+      if (groupId === '')
       {
         app.props.navigation.navigate('Groups');
       }

@@ -1,19 +1,28 @@
-/* @flow */
-
-import React from 'react';
+import React, { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
   StyleSheet,
 } from 'react-native';
 
-const Button = ({ onPress, children }) => {
-  return (
-    <TouchableOpacity onPress={ onPress } style={ styles.button }>
-      <Text style={ styles.text }> { children }</Text>
-    </TouchableOpacity>
-  );
-};
+class Button extends Component {
+
+  constructor(props) {
+   super(props)
+  }
+
+  render() {
+    return (
+      <TouchableOpacity
+        {...this.props}
+        style={ styles.button }>
+
+        <Text style={ styles.text }> { this.props.children }</Text>
+
+      </TouchableOpacity>
+    );
+  };
+}
 
 const styles = StyleSheet.create({
   button: {

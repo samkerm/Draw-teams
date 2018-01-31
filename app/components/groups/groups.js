@@ -53,9 +53,49 @@ export default class Groups extends Component {
     app.setState({ creatingGroup: true });
   }
 
+  showFirebaseAlert(title, message) {
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'Ok', style: 'cancel'},
+      ],
+      { cancelable: false }
+    )
+  }
+
   createGroup()
   {
     console.log(app.state.groupName, app.state.groupGameType);
+    // Make sure the display name is filled but its not important if the ratings are not filled
+    if (app.state.groupName !== '' && app.state.groupGameType !== '')
+    {
+      const groupData = {
+        name: app.state.groupName,
+        gameType: app.state.groupGameType
+      };
+
+      const groupsRef = firebase.database().ref('groups/');
+      const newGroupKey = groupsRef.push().key;
+
+      // Write the new post's data simultaneously in the posts list and the user's post list.
+      let updates = {};
+      updates['/groups/' + newGroupKey] = groupData;
+      updates['/users/' + app.state.userId + '/groupId'] = newGroupKey;
+
+      firebase.database().ref().update(updates)
+      .then(function() {
+        app.showFirebaseAlert('Group creation succeeded!');
+        app.props.navigation.goBack();
+      })
+      .catch(function(error) {
+        app.showFirebaseAlert('Group creation failed', error.message);
+      });
+    }
+    else
+    {
+      app.showFirebaseAlert('Incomplete!', 'Make sure you at least have filled up the group name and game type.');
+    }
   }
 
   initiateJoiningGroup()
