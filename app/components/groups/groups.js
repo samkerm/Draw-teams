@@ -72,7 +72,10 @@ export default class Groups extends Component {
     {
       const groupData = {
         name: app.state.groupName,
-        gameType: app.state.groupGameType
+        gameType: app.state.groupGameType,
+        members: [
+          { regular: app.state.userId }
+        ],
       };
 
       const groupsRef = firebase.database().ref('groups/');
