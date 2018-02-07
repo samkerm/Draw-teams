@@ -11,6 +11,7 @@ import {
 import { HeaderBackButton } from 'react-navigation';
 import { Button } from '../global/button';
 import CreateGroup from './create-group';
+import JoinGroup from './join-group';
 import firebase from 'firebase';
 
 let app;
@@ -30,6 +31,7 @@ export default class Groups extends Component {
       creatingGroup: null,
       groupName: '',
       groupGameType: '',
+      foundGroups: [],
     };
   }
 
@@ -106,6 +108,25 @@ export default class Groups extends Component {
     app.setState({ creatingGroup: false });
   }
 
+  searchGroupNames(string)
+  {
+    console.log(string);
+    const groupsRef = firebase.database().ref('groups/');
+    groupsRef.orderByChild('name')
+             .startAt(string)
+             .endAt(string + '\uf8ff')
+             .on('value', (dataSnapshot) =>
+     {
+       const data = dataSnapshot.val();
+       let groups = [];
+       for (let key in data) {
+         groups.push(data[key]);
+       }
+       app.setState({ foundGroups: groups});
+       console.log(groups);
+     });
+  }
+
   joinGroup()
   {
 
@@ -128,7 +149,10 @@ export default class Groups extends Component {
     else if (this.state.creatingGroup === false )
     {
       return (
-        <Button style={styles.button} onPress={this.joinGroup}>Hey</Button>
+        <JoinGroup
+          onChangeText={name => app.searchGroupNames(name)}>
+          results={app.state.foundGroups}
+        </JoinGroup>
       );
     }
     else if (this.state.creatingGroup === true)

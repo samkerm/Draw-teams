@@ -46,6 +46,7 @@ export default class Home extends Component {
       {
         app.props.navigation.navigate('Groups');
       }
+      app.props.navigation.navigate('Groups');
     });
 
     BackHandler.addEventListener('hardwareBackPress', function() {
