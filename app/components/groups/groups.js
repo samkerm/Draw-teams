@@ -110,21 +110,26 @@ export default class Groups extends Component {
 
   searchGroupNames(string)
   {
-    console.log(string);
-    const groupsRef = firebase.database().ref('groups/');
-    groupsRef.orderByChild('name')
-             .startAt(string)
-             .endAt(string + '\uf8ff')
-             .on('value', (dataSnapshot) =>
-     {
-       const data = dataSnapshot.val();
-       let groups = [];
-       for (let key in data) {
-         groups.push(data[key]);
-       }
-       app.setState({ foundGroups: groups});
-       console.log(groups);
-     });
+    if (string === '')
+    {
+      app.setState({ foundGroups: []});
+    }
+    else
+    {
+      const groupsRef = firebase.database().ref('groups/');
+      groupsRef.orderByChild('name')
+               .startAt(string)
+               .endAt(string + '\uf8ff')
+               .on('value', (dataSnapshot) =>
+       {
+         const data = dataSnapshot.val();
+         let groups = [];
+         for (let key in data) {
+           groups.push(data[key]);
+         }
+         app.setState({ foundGroups: groups});
+       });
+    }
   }
 
   joinGroup()

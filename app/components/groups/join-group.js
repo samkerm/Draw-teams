@@ -15,23 +15,31 @@ export default class JoinGroup extends Component {
 
   render() {
     let groups = [];
-    if (this.props.children && this.props.children[1])
+    if (this.props.children && this.props.children[1] && this.props.children[1].length > 0)
     {
       const results = this.props.children[1];
       results.forEach(
-        res =>
+        (res, index) =>
         {
           groups.push(
-            <View>
-              <View>
-                <Text>{res.name}</Text>
+            <View key={((index + 1)*76374).toString()}>
+              <View key={((index + 1)*6746756).toString()}>
+                <Text key={((index + 1)*123234).toString()}>{res.name}</Text>
               </View>
-              <View>
-                <Text>{res.gameType}</Text>
+              <View key={((index + 1)*32143).toString()}>
+                <Text key={((index + 1)*6746756).toString()}>{res.gameType}</Text>
               </View>
             </View>
           );
         });
+    }
+    else
+    {
+      groups.push(
+        <View key={(784579).toString()}>
+        <Text key={(346537).toString()}>No groups...</Text>
+        </View>
+      );
     }
     return (
       <View style={styles.container}>
