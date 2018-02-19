@@ -5,31 +5,37 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { Input } from '../global/input';
 
 export default class JoinGroup extends Component {
   constructor(props) {
-   super(props)
+   super(props);
   }
 
   render() {
     let groups = [];
-    if (this.props.children && this.props.children[1] && this.props.children[1].length > 0)
+    if (this.props.results.length > 0)
     {
-      const results = this.props.children[1];
+      const results = this.props.results;
       results.forEach(
         (res, index) =>
         {
           groups.push(
-            <View key={((index + 1)*76374).toString()}>
-              <View key={((index + 1)*6746756).toString()}>
-                <Text key={((index + 1)*123234).toString()}>{res.name}</Text>
+            <TouchableOpacity style={styles.result} key={((index + 1)*76374).toString()}
+              onPress={() => this.props.selectedGroup(res.id)}>
+              <View
+                style={styles.groupName}
+                key={((index + 1)*6746756).toString()}>
+                <Text style={{fontWeight: 'bold'}} key={((index + 1)*123234).toString()}>{res.name}</Text>
               </View>
-              <View key={((index + 1)*32143).toString()}>
-                <Text key={((index + 1)*6746756).toString()}>{res.gameType}</Text>
+              <View
+                style={styles.gameType}
+                key={((index + 1)*32143).toString()}>
+                <Text style={{color: 'grey', textAlign: 'right'}} key={((index + 1)*6746756).toString()}>{res.gameType}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         });
     }
@@ -37,7 +43,7 @@ export default class JoinGroup extends Component {
     {
       groups.push(
         <View key={(784579).toString()}>
-        <Text key={(346537).toString()}>No groups...</Text>
+          <Text style={styles.noResult} key={(346537).toString()}>No groups...</Text>
         </View>
       );
     }
@@ -50,7 +56,9 @@ export default class JoinGroup extends Component {
           keyboardType={'default'}
           onChangeText={ this.props.onChangeText }
         />
-        {groups}
+        <View style={styles.results}>
+          {groups}
+        </View>
       </View>
     );
   }
@@ -60,4 +68,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  results: {
+    padding: 10,
+  },
+  groupName: {
+    width: '70%',
+    paddingLeft: 5,
+  },
+  gameType: {
+    width: '30%',
+    paddingRight: 5
+  },
+  result: {
+    flexDirection: 'row',
+    height: 50,
+    backgroundColor: 'cornsilk',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  noResult: {
+    color: 'coral',
+  }
 });

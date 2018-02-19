@@ -13,8 +13,10 @@ import { Button } from '../global/button';
 import CreateGroup from './create-group';
 import JoinGroup from './join-group';
 import firebase from 'firebase';
+import axios from 'axios';
 
 let app;
+let http;
 
 export default class Groups extends Component {
   static navigationOptions = {
@@ -33,6 +35,18 @@ export default class Groups extends Component {
       groupGameType: '',
       foundGroups: [],
     };
+
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+      http = axios.create({
+        baseURL: 'http://localhost:5000/draw-teams/us-central1/app',
+        timeout: 6000,
+        headers: {
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+    }).catch(function(error) {
+      console.error(error);
+    });
   }
 
   componentWillMount() {
@@ -66,7 +80,7 @@ export default class Groups extends Component {
     )
   }
 
-  createGroup()
+  async createGroup()
   {
     console.log(app.state.groupName, app.state.groupGameType);
     // Make sure the display name is filled but its not important if the ratings are not filled
@@ -75,27 +89,21 @@ export default class Groups extends Component {
       const groupData = {
         name: app.state.groupName,
         gameType: app.state.groupGameType,
-        members: [
-          { regular: app.state.userId }
-        ],
+        members: [{regular: app.state.userId}],
       };
 
-      const groupsRef = firebase.database().ref('groups/');
-      const newGroupKey = groupsRef.push().key;
-
-      // Write the new post's data simultaneously in the posts list and the user's post list.
-      let updates = {};
-      updates['/groups/' + newGroupKey] = groupData;
-      updates['/users/' + app.state.userId + '/groupId'] = newGroupKey;
-
-      firebase.database().ref().update(updates)
-      .then(function() {
+      try
+      {
+        const {data: callBack} = await http.post('/groups/create', groupData);
+        console.log(callBack);
         app.showFirebaseAlert('Group creation succeeded!');
         app.props.navigation.goBack();
-      })
-      .catch(function(error) {
+      }
+      catch (error)
+      {
         app.showFirebaseAlert('Group creation failed', error.message);
-      });
+        console.error(error);
+      }
     }
     else
     {
@@ -108,7 +116,7 @@ export default class Groups extends Component {
     app.setState({ creatingGroup: false });
   }
 
-  searchGroupNames(string)
+  async searchGroupNames(string)
   {
     if (string === '')
     {
@@ -116,25 +124,37 @@ export default class Groups extends Component {
     }
     else
     {
-      const groupsRef = firebase.database().ref('groups/');
-      groupsRef.orderByChild('name')
-               .startAt(string)
-               .endAt(string + '\uf8ff')
-               .on('value', (dataSnapshot) =>
-       {
-         const data = dataSnapshot.val();
-         let groups = [];
-         for (let key in data) {
-           groups.push(data[key]);
-         }
-         app.setState({ foundGroups: groups});
-       });
+      try
+      {
+        const {data: groups} = await http.get(`/groups/search?string=${string}`);
+        console.log(groups);
+        app.setState({ foundGroups: groups});
+      }
+      catch (e)
+      {
+        console.error(e);
+      }
     }
   }
 
-  joinGroup()
+  joinGroup = (groupId) =>
   {
-
+    const groupsRef = firebase.database().ref('groups/' + groupId + '/members');
+    groupsRef.once('value').then((snapshot) =>
+    {
+      const data = snapshot.val();
+      let members = [];
+      for (const key in data) {
+        members.push(data[key].regular);
+      }
+      const found = members.find(el => el === app.state.userId);
+      if (!found)
+      {
+        data.push({regular: app.state.userId});
+        groupsRef.update(data);
+      }
+      console.log(members, 'something');
+    });
   }
 
   renderCurrentState() {
@@ -155,8 +175,9 @@ export default class Groups extends Component {
     {
       return (
         <JoinGroup
-          onChangeText={name => app.searchGroupNames(name)}>
+          onChangeText={name => app.searchGroupNames(name)}
           results={app.state.foundGroups}
+          selectedGroup={groupId => app.joinGroup(groupId)}>
         </JoinGroup>
       );
     }

@@ -17,8 +17,10 @@ import {
 import { Button } from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
+import axios from 'axios';
 
 let app;
+let http;
 
 export default class Avatar extends Component {
   static navigationOptions = {
@@ -32,6 +34,18 @@ export default class Avatar extends Component {
     this.state = {
       photos: []
     }
+
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+      http = axios.create({
+        baseURL: 'http://localhost:5000/draw-teams/us-central1/app',
+        timeout: 6000,
+        headers: {
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+    }).catch(function(error) {
+      console.error(error);
+    });
   }
 
   componentWillMount() {
@@ -82,7 +96,13 @@ export default class Avatar extends Component {
      });
   };
 
-  setAvatar() {
+  async setAvatar() {
+    try {
+      const {data: response} = await http.get('/addMessage?original=Heythere');
+      console.log(response);
+    } catch (e) {
+      console.error(e);
+    }
     app.props.navigation.navigate('Home');
   }
 

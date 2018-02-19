@@ -18,6 +18,7 @@ export default class CreateGroup extends Component {
     let data = [{
       value: '5 vs 5 soccer',
     }];
+    // TODO: need to set a maximum number of characters
     return (
       <View style={styles.container}>
         <Input
