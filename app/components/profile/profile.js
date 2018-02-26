@@ -14,8 +14,10 @@ import { StackNavigator, HeaderBackButton } from 'react-navigation';
 import { Input } from '../global/input';
 import { Button } from '../global/button';
 import LabledSlider from '../global/slider';
+import axios from 'axios';
 
 let app;
+let http;
 
 export default class Profile extends Component {
 
@@ -42,6 +44,8 @@ export default class Profile extends Component {
         goalie: 0
       }
     };
+
+    http = axios.create();
   }
 
   componentWillMount() {
@@ -105,53 +109,47 @@ export default class Profile extends Component {
     )
   }
 
-  registerUser() {
+  async registerUser() {
     // Make sure the display name is filled but its not important if the ratings are not filled
     if (this.state.displayName && this.state.displayName !== '')
     {
-      firebase.auth().currentUser.updateProfile({
-        displayName: app.state.displayName,
-      }).then(function() {
-        firebase.database().ref('users/' + app.state.userId).set({
-          displayName: app.state.displayName,
-          ratings: app.state.ratings,
-        })
-        .then(function() {
-          console.log('User synchronization succeeded3');
-          const ratingsRef = firebase.database().ref('ratings/');
-          const newRatingRef = ratingsRef.push();
-          newRatingRef.set({
-            userId: app.state.userId,
-            ratedBy: app.state.userId,
-            date: new Date().toUTCString(),
-            sport: '5 vs 5 soccer',
-            defence: app.state.ratings.defence,
-            speed: app.state.ratings.speed,
-            attack: app.state.ratings.attack,
-            pass: app.state.ratings.pass,
-            dribble: app.state.ratings.dribble,
-            goalie: app.state.ratings.goalie
-          })
-          .then(function() {
-            app.showFirebaseAlert('Ratings synchronization succeeded!');
-            if (firebase.auth().currentUser.photoURL)
-            {
-              app.props.navigation.navigate('Home');
-            }
-            else {
-              app.props.navigation.navigate('Avatar');
-            }
-          })
-          .catch(function(error) {
-            app.showFirebaseAlert('Ratings synchronization failed', error.message);
-          });
-        })
-        .catch(function(error) {
-          app.showFirebaseAlert('User synchronization failed', error.message);
-        });
-      }, function(error) {
-        app.showFirebaseAlert('Failed updating user info', error.message);
-      });
+      try {
+        const res = await http.post('/users/updateDisplayName', {displayName: app.state.displayName});
+        console.log(res);
+        const result = await http.post('/users/initializeUserWithRatings', {ratings: app.state.ratings, displayName: app.state.displayName});
+        console.log(result);
+      } catch (e) {
+        console.log(e);
+      }
+
+    //
+    //     .then(function() {
+    //       app.showFirebaseAlert('Ratings synchronization succeeded!');
+    //       if (firebase.auth().currentUser.photoURL)
+    //       {
+    //         app.props.navigation.navigate('Home');
+    //       }
+    //       else {
+    //         app.props.navigation.navigate('Avatar');
+    //       }
+    //     })
+    //     .catch(function(error) {
+    //       app.showFirebaseAlert('Ratings synchronization failed', error.message);
+    //     });
+    //   })
+    //   .catch(function(error) {
+    //     app.showFirebaseAlert('User synchronization failed', error.message);
+    //   });
+    //
+    //
+    //
+    //   firebase.auth().currentUser.updateProfile({
+    //     displayName: app.state.displayName,
+    //   }).then(function() {
+    //
+    //   }, function(error) {
+    //     app.showFirebaseAlert('Failed updating user info', error.message);
+    //   });
     }
     else
     {

@@ -13,6 +13,7 @@ import { StackNavigator } from 'react-navigation';
 import { Input } from '../global/input';
 import { Button } from '../global/button';
 import firebase from 'firebase';
+import axios from 'axios';
 
 let app;
 
@@ -36,15 +37,31 @@ export default class Login extends Component {
     app = this;
     const { navigate } = this.props.navigation;
     app.setState({ authenticating: true });
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user && app.state.authenticating) {
-        if (user.displayName && user.photoURL) {
+    firebase.auth().onAuthStateChanged(function(user)
+    {
+      if (user && app.state.authenticating)
+      {
+        // Set up axios globally
+        firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken)
+        {
+          axios.defaults.baseURL = 'http://localhost:5000/draw-teams/us-central1/app';
+          axios.defaults.timeout = 30000;
+          axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
+        }).catch(function(error)
+        {
+          console.error(error);
+        });
+
+        if (user.displayName && user.photoURL)
+        {
           navigate('Home');
         }
-        else if (!user.displayName) {
+        else if (!user.displayName)
+        {
           navigate('Profile');
         }
-        else if (!user.photoURL) {
+        else if (!user.photoURL)
+        {
           navigate('Avatar');
         }
       }

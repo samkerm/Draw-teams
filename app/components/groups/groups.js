@@ -36,17 +36,7 @@ export default class Groups extends Component {
       foundGroups: [],
     };
 
-    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-      http = axios.create({
-        baseURL: 'http://localhost:5000/draw-teams/us-central1/app',
-        timeout: 6000,
-        headers: {
-          'Authorization': `Bearer ${idToken}`
-        }
-      });
-    }).catch(function(error) {
-      console.error(error);
-    });
+    http = axios.create();
   }
 
   componentWillMount() {
