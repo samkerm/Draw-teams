@@ -10,8 +10,10 @@ import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import Groups from '../groups/groups';
+import axios from 'axios';
 
 let app;
+let http;
 
 const App = StackNavigator({
   Groups: { screen: Groups },
@@ -29,25 +31,25 @@ export default class Home extends Component {
     this.state = {
       userId: user.uid
     };
+
+    http = axios.create();
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     app = this;
-    const userRef = firebase.database().ref('users/' + app.state.userId);
-    userRef.once('value')
-    .then(function(snapshot) {
-      const displayName = snapshot.child('displayName').val() || '';
-      const groupId = snapshot.child('groupId').val() || '';
-      app.setState({
-        displayName,
-        groupId
-      })
-      if (groupId === '')
-      {
-        app.props.navigation.navigate('Groups');
-      }
+    const {data} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+    console.log(data);
+    const displayName = data.displayName || '';
+    const groupId = data.groupId || '';
+    app.setState({
+      displayName,
+      groupId
+    })
+    if (groupId === '')
+    {
       app.props.navigation.navigate('Groups');
-    });
+    }
+    app.props.navigation.navigate('Groups');
 
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;

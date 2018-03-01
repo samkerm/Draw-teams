@@ -79,7 +79,7 @@ export default class Groups extends Component {
       const groupData = {
         name: app.state.groupName,
         gameType: app.state.groupGameType,
-        members: [{regular: app.state.userId}],
+        regulars: [app.state.userId],
       };
 
       try
@@ -127,24 +127,18 @@ export default class Groups extends Component {
     }
   }
 
-  joinGroup = (groupId) =>
+  async joinGroup(groupId)
   {
-    const groupsRef = firebase.database().ref('groups/' + groupId + '/members');
-    groupsRef.once('value').then((snapshot) =>
+    try
     {
-      const data = snapshot.val();
-      let members = [];
-      for (const key in data) {
-        members.push(data[key].regular);
-      }
-      const found = members.find(el => el === app.state.userId);
-      if (!found)
-      {
-        data.push({regular: app.state.userId});
-        groupsRef.update(data);
-      }
-      console.log(members, 'something');
-    });
+      console.log(groupId);
+      const {data: groups} = await http.post(`/groups/join?groupId=${groupId}`);
+      console.log(groups);
+    }
+    catch (error)
+    {
+      console.log(error.message);
+    }
   }
 
   renderCurrentState() {
