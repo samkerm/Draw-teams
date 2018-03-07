@@ -114,42 +114,36 @@ export default class Profile extends Component {
     if (this.state.displayName && this.state.displayName !== '')
     {
       try {
-        const res = await http.post('/users/updateDisplayName', {displayName: app.state.displayName});
-        console.log(res);
-        const result = await http.post('/users/initializeUserWithRatings', {ratings: app.state.ratings, displayName: app.state.displayName});
-        console.log(result);
-      } catch (e) {
-        console.log(e);
+        await http.post('/users/updateDisplayName', {displayName: app.state.displayName});
+        await http.post('/users/initializeUserWithRatings', {ratings: app.state.ratings, displayName: app.state.displayName});
+        // if (createdUser.photoURL)
+        // {
+        //   app.props.navigation.navigate('Home');
+        // }
+        // else {
+        //   app.props.navigation.navigate('Avatar');
+        // }
+        app.props.navigation.navigate('Avatar');
       }
-
-    //
-    //     .then(function() {
-    //       app.showFirebaseAlert('Ratings synchronization succeeded!');
-    //       if (firebase.auth().currentUser.photoURL)
-    //       {
-    //         app.props.navigation.navigate('Home');
-    //       }
-    //       else {
-    //         app.props.navigation.navigate('Avatar');
-    //       }
-    //     })
-    //     .catch(function(error) {
-    //       app.showFirebaseAlert('Ratings synchronization failed', error.message);
-    //     });
-    //   })
-    //   .catch(function(error) {
-    //     app.showFirebaseAlert('User synchronization failed', error.message);
-    //   });
-    //
-    //
-    //
-    //   firebase.auth().currentUser.updateProfile({
-    //     displayName: app.state.displayName,
-    //   }).then(function() {
-    //
-    //   }, function(error) {
-    //     app.showFirebaseAlert('Failed updating user info', error.message);
-    //   });
+      catch (error)
+      {
+        if (error.response && error.response.data && error.response.data === 'Update failed')
+        {
+          app.showFirebaseAlert('User synchronization failed', 'Failed to update user profile name');
+        }
+        else if (error.response && error.response.data && error.response.data === 'Initialization failed')
+        {
+          app.showFirebaseAlert('Ratings synchronization failed', 'Failed to update user ratings');
+        }
+        else if (error.status === 400)
+        {
+          app.showDisplayNameAlert('Incomplete!', error.message);
+        }
+        else
+        {
+          app.showFirebaseAlert('Synchronization failed', error.message);
+        }
+      }
     }
     else
     {

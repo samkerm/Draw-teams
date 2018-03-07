@@ -41,6 +41,24 @@ export default class Groups extends Component {
 
   componentWillMount() {
     app = this;
+    app.checkUserGroupStatus();
+  }
+
+  async checkUserGroupStatus()
+  {
+    try
+    {
+      const {data} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+      console.log(data);
+      if (data && data.groupId)
+      {
+        app.props.navigation.goBack();
+      }
+    }
+    catch (e)
+    {
+      console.log(e);
+    }
   }
 
   alet(title, message) {
@@ -117,7 +135,6 @@ export default class Groups extends Component {
       try
       {
         const {data: groups} = await http.get(`/groups/search?string=${string}`);
-        console.log(groups);
         app.setState({ foundGroups: groups});
       }
       catch (e)
@@ -131,13 +148,23 @@ export default class Groups extends Component {
   {
     try
     {
-      console.log(groupId);
-      const {data: groups} = await http.post(`/groups/join?groupId=${groupId}`);
-      console.log(groups);
+      await http.post(`/groups/join?groupId=${groupId}`);
+      app.props.navigation.goBack();
     }
     catch (error)
     {
-      console.log(error.message);
+      if (error.response && error.response.status === 500)
+      {
+        console.log(error);
+      }
+      else if (error.response && error.response.data && error.response.status === 403)
+      {
+        app.showFirebaseAlert('Can\'t join group', error.response.data)
+      }
+      else
+      {
+        app.showFirebaseAlert('Can\'t join group', 'Failed to join this group')
+      }
     }
   }
 
@@ -163,6 +190,7 @@ export default class Groups extends Component {
           results={app.state.foundGroups}
           selectedGroup={groupId => app.joinGroup(groupId)}>
         </JoinGroup>
+        // TODO: Add join a group toggle button
       );
     }
     else if (this.state.creatingGroup === true)
@@ -174,6 +202,7 @@ export default class Groups extends Component {
           onCreationRequest={this.createGroup}
         >
         </CreateGroup>
+        // TODO: Add create a group toggle button
       );
     }
   }
