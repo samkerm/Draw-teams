@@ -99,7 +99,9 @@ export default class Avatar extends Component {
   render() {
     return (
       <View>
-       <Button onPress={this._handleButtonPress}>Load Images</Button>
+        <View style={styles.button}>
+          <Button onPress={this._handleButtonPress}>Load Images</Button>
+        </View>
        <ScrollView>
          {this.state.photos.map((p, i) => {
          return (
@@ -114,7 +116,9 @@ export default class Avatar extends Component {
          );
        })}
        </ScrollView>
-       <Button onPress={this.setAvatar}>Set Avatar</Button>
+       <View style={styles.button}>
+         <Button onPress={this.setAvatar}>Set Avatar</Button>
+       </View>
      </View>
     );
   }
@@ -126,6 +130,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  button: {
+    marginRight: 10,
+    marginLeft: 10,
+  }
 });
 
 AppRegistry.registerComponent('Avatar', () => MyApp);

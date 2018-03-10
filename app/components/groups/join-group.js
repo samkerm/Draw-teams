@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Input } from '../global/input';
+import { Button } from '../global/button';
 
 export default class JoinGroup extends Component {
   constructor(props) {
@@ -49,15 +50,24 @@ export default class JoinGroup extends Component {
     }
     return (
       <View style={styles.container}>
-        <Input
-          placeholder={ 'Search a group name...' }
-          label={ 'Group Names' }
-          returnKeyType={'search'}
-          keyboardType={'default'}
-          onChangeText={ this.props.onChangeText }
-        />
-        <View style={styles.results}>
-          {groups}
+        <View style={styles.container}>
+          <Input
+            placeholder={ 'Search a group name...' }
+            label={ 'Group Names' }
+            returnKeyType={'search'}
+            keyboardType={'default'}
+            onChangeText={ this.props.onChangeText }
+          />
+          <View style={styles.results}>
+            {groups}
+          </View>
+        </View>
+        <View style={styles.button}>
+          <Button
+            onPress={this.props.toggleGroup }
+            background={styles.whiteBG}
+            textColor={styles.textColor}>Create a new group
+          </Button>
         </View>
       </View>
     );
@@ -89,5 +99,16 @@ const styles = StyleSheet.create({
   },
   noResult: {
     color: 'coral',
+  },
+  button: {
+    marginRight: 10,
+    marginLeft: 10,
+    height: 80
+  },
+  whiteBG: {
+    backgroundColor: '#FFF',
+  },
+  textColor: {
+    color: '#000'
   }
 });

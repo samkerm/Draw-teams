@@ -15,9 +15,9 @@ class Button extends Component {
     return (
       <TouchableOpacity
         {...this.props}
-        style={ styles.button }>
+        style={[styles.button, this.props.background]}>
 
-        <Text style={ styles.text }> { this.props.children }</Text>
+        <Text style={[styles.text, this.props.textColor]}> { this.props.children }</Text>
 
       </TouchableOpacity>
     );

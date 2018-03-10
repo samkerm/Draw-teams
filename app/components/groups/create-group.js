@@ -36,11 +36,22 @@ export default class CreateGroup extends Component {
           data={data}
           onChangeText={this.props.onChangeDropdown}
         />
-        <View style={styles.footer}>
+        <View style={styles.button}>
           <Button
             onPress={ this.props.onCreationRequest }>
-            Create
+            Create and join new group
           </Button>
+        </View>
+
+        <View style={styles.footer}>
+          <View style={styles.button}>
+            <Button
+              background={styles.whiteBG}
+              textColor={styles.textColor}
+              onPress={ this.props.toggleGroup }>
+              Join existing
+            </Button>
+          </View>
         </View>
       </View>
     );
@@ -54,8 +65,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    left: 10,
-    right: 10,
     bottom: 10,
+    left: 0,
+    right: 0,
+  },
+  button: {
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  whiteBG: {
+    backgroundColor: '#FFF',
+  },
+  textColor: {
+    color: '#000'
   }
 });

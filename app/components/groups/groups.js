@@ -77,6 +77,16 @@ export default class Groups extends Component {
     app.setState({ creatingGroup: true });
   }
 
+  initiateJoiningGroup()
+  {
+    app.setState({ creatingGroup: false });
+  }
+
+  toggleGroup()
+  {
+    app.setState({ creatingGroup: !app.state.creatingGroup });
+  }
+
   showFirebaseAlert(title, message) {
     Alert.alert(
       title,
@@ -119,11 +129,6 @@ export default class Groups extends Component {
     }
   }
 
-  initiateJoiningGroup()
-  {
-    app.setState({ creatingGroup: false });
-  }
-
   async searchGroupNames(string)
   {
     if (string === '')
@@ -148,7 +153,9 @@ export default class Groups extends Component {
   {
     try
     {
-      await http.post(`/groups/join?groupId=${groupId}`);
+      console.log('Trying to join');
+      const res = await http.post(`/groups/join?groupId=${groupId}`);
+      console.log(res);
       app.props.navigation.goBack();
     }
     catch (error)
@@ -188,9 +195,10 @@ export default class Groups extends Component {
         <JoinGroup
           onChangeText={name => app.searchGroupNames(name)}
           results={app.state.foundGroups}
-          selectedGroup={groupId => app.joinGroup(groupId)}>
+          selectedGroup={groupId => app.joinGroup(groupId)}
+          toggleGroup={app.toggleGroup}
+          >
         </JoinGroup>
-        // TODO: Add join a group toggle button
       );
     }
     else if (this.state.creatingGroup === true)
@@ -200,9 +208,9 @@ export default class Groups extends Component {
           onChangeText={name => app.setState({ groupName: name.trim() })}
           onChangeDropdown={type => app.setState({ groupGameType: type })}
           onCreationRequest={this.createGroup}
-        >
+          toggleGroup={app.toggleGroup}
+          >
         </CreateGroup>
-        // TODO: Add create a group toggle button
       );
     }
   }
