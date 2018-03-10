@@ -21,6 +21,7 @@ const App = StackNavigator({
 
 export default class Home extends Component {
   static navigationOptions = {
+    title: 'need to join a group',
     headerLeft: null,
     gesturesEnabled: false,
   };
@@ -37,19 +38,31 @@ export default class Home extends Component {
 
   async componentWillMount() {
     app = this;
-    const {data} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
-    console.log(data);
-    const displayName = data.displayName || '';
-    const groupId = data.groupId || '';
-    app.setState({
-      displayName,
-      groupId
-    })
-    if (groupId === '')
-    {
-      app.props.navigation.navigate('Groups');
+    try {
+      const {data} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+      console.log(data);
+      const displayName = data.displayName || '';
+      const groupId = data.groupId || '';
+      app.setState({
+        displayName,
+        groupId
+      })
+      if (groupId === '')
+      {
+        app.props.navigation.navigate('Groups');
+      }
+      else
+      {
+        const {data: {name}} = await http.get(`/groups?groupId=${groupId}`);
+        console.log(name);
+        app.props.navigation.state.params.title = name;
+      }
     }
-    
+    catch (error)
+    {
+      console.log(error);
+    }
+
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
     });
