@@ -20,10 +20,14 @@ const App = StackNavigator({
 });
 
 export default class Home extends Component {
-  static navigationOptions = {
-    title: 'need to join a group',
-    headerLeft: null,
-    gesturesEnabled: false,
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: params ? params.otherParam : 'need to join a group',
+      headerLeft: null,
+      gesturesEnabled: false,
+    }
   };
 
   constructor() {
@@ -55,7 +59,7 @@ export default class Home extends Component {
       {
         const {data: {name}} = await http.get(`/groups?groupId=${groupId}`);
         console.log(name);
-        app.props.navigation.state.params.title = name;
+        app.props.navigation.setParams({otherParam: name})
       }
     }
     catch (error)
