@@ -4,6 +4,8 @@ import {
   Text,
   StyleSheet,
   AppRegistry,
+  TouchableOpacity,
+  Image,
   BackHandler
 } from 'react-native';
 import firebase from 'firebase';
@@ -11,6 +13,7 @@ import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import Groups from '../groups/groups';
 import axios from 'axios';
+import _ from 'lodash';
 
 let app;
 let http;
@@ -26,6 +29,13 @@ export default class Home extends Component {
     return {
       title: params ? params.otherParam : 'need to join a group',
       headerLeft: null,
+      headerRight: (
+        <TouchableOpacity>
+          <Image source={require('../../images/icons/profile-edit.png')}
+                 style={styles.editProfileIcon}
+          />
+        </TouchableOpacity>
+      ),
       gesturesEnabled: false,
     }
   };
@@ -34,7 +44,8 @@ export default class Home extends Component {
     super();
     const user = firebase.auth().currentUser;
     this.state = {
-      userId: user.uid
+      userId: user.uid,
+      group: {},
     };
 
     http = axios.create();
@@ -57,9 +68,9 @@ export default class Home extends Component {
       }
       else
       {
-        const {data: {name}} = await http.get(`/groups?groupId=${groupId}`);
-        console.log(name);
-        app.props.navigation.setParams({otherParam: name})
+        const {data} = await http.get(`/groups/${groupId}`);
+        app.setState({group: data});
+        app.props.navigation.setParams({otherParam: data.name})
       }
     }
     catch (error)
@@ -92,6 +103,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20
   },
+  editProfileIcon: {
+    width: 20,
+    height: 20,
+    right: 10,
+  }
 });
 
 AppRegistry.registerComponent('Home', () => MyApp);
