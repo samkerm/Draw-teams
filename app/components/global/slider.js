@@ -24,7 +24,7 @@ class LabledSlider extends Component {
         <Slider
           style={ styles.slider }
           value={ this.props.value }
-          maximumValue={ 10 }
+          maximumValue={ this.props.maximumValue || 10 }
           onValueChange={ value => this.setState({value}) }
           onSlidingComplete={ this.props.onSlidingComplete }
           step={ 1 }
@@ -38,12 +38,13 @@ class LabledSlider extends Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 50
   },
   label: {
     width: '20%',
-    height: 15
+    height: 15,
+    left: 5,
   },
   slider: {
     width: '70%',

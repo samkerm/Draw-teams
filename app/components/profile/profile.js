@@ -35,7 +35,7 @@ export default class Profile extends Component {
       userId: user.uid,
       displayName: user.displayName,
       ratings: {
-        sport: '5 vs 5 soccer',
+        sport: 'Soccer',
         defence: 0,
         speed: 0,
         attack: 0,
@@ -166,26 +166,32 @@ export default class Profile extends Component {
             Skills:
           </Text>
           <LabledSlider
+            style={styles.slider}
             label={ 'Defence' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {defence: value} )}) }
           />
           <LabledSlider
+            style={styles.slider}
             label={ 'Attack' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {attack: value} )}) }
           />
           <LabledSlider
+            style={styles.slider}
             label={ 'Speed' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {speed: value} )}) }
           />
           <LabledSlider
+            style={styles.slider}
             label={ 'Pass' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {pass: value} )}) }
           />
           <LabledSlider
+            style={styles.slider}
             label={ 'Dribble' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {dribble: value} )}) }
           />
           <LabledSlider
+            style={styles.slider}
             label={ 'Goalie' }
             onSlidingComplete={ value => this.setState({ ratings: Object.assign({}, this.state.ratings, {goalie: value} )}) }
           />
@@ -215,7 +221,8 @@ const styles = StyleSheet.create({
   },
   slider: {
     borderColor: '#AAA',
-    borderWidth: 2
+    borderWidth: 2,
+    height: 30
   }
 });
 

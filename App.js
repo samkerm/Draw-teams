@@ -5,6 +5,7 @@ import {
 import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
 import Home from './app/components/home/home';
+import NextGame from './app/components/home/nextGame';
 import Login from './app/components/login/login';
 import Profile from './app/components/profile/profile';
 import Avatar from './app/components/avatar/avatar';
@@ -16,6 +17,7 @@ const App = StackNavigator({
   Avatar: { screen: Avatar },
   Groups: { screen: Groups },
   Home: { screen: Home },
+  NextGame: { screen: NextGame },
 });
 
 export default class MyApp extends Component {
