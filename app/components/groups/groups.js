@@ -41,24 +41,6 @@ export default class Groups extends Component {
 
   componentWillMount() {
     app = this;
-    app.checkUserGroupStatus();
-  }
-
-  async checkUserGroupStatus()
-  {
-    try
-    {
-      const {data} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
-      console.log(data);
-      if (data && data.groupId)
-      {
-        app.props.navigation.goBack();
-      }
-    }
-    catch (e)
-    {
-      console.log(e);
-    }
   }
 
   alet(title, message) {
@@ -115,6 +97,7 @@ export default class Groups extends Component {
         const {data: callBack} = await http.post('/groups/create', groupData);
         console.log(callBack);
         app.showFirebaseAlert('Group creation succeeded!');
+        app.props.navigation.state.params.onNavigateBack();
         app.props.navigation.goBack();
       }
       catch (error)
@@ -154,8 +137,9 @@ export default class Groups extends Component {
     try
     {
       console.log('Trying to join');
-      const res = await http.post(`/groups/join?groupId=${groupId}`);
+      const res = await http.post(`/groups/${groupId}/join`);
       console.log(res);
+      app.props.navigation.state.params.onNavigateBack();
       app.props.navigation.goBack();
     }
     catch (error)

@@ -14,17 +14,15 @@ import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import { Button } from '../global/button';
+import CheckBox from 'react-native-check-box';
 import Groups from '../groups/groups';
 import NextGame from './nextGame';
 import axios from 'axios';
 import _ from 'lodash';
+import moment from 'moment';
 
 let app;
 let http;
-
-const App = StackNavigator({
-  Groups: { screen: Groups },
-});
 
 export default class Home extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -50,45 +48,18 @@ export default class Home extends Component {
     this.state = {
       userId: user.uid,
       group: {},
+      displayName: '',
+      groupId: '',
+      isSetNextGame: false,
+      rsvp: undefined,
     };
 
     http = axios.create();
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     app = this;
-    try {
-      const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
-      console.log(currentUserInfo);
-      const displayName = currentUserInfo.displayName || '';
-      const groupId = currentUserInfo.groupId || '';
-      app.setState({
-        displayName,
-        groupId
-      })
-      if (groupId === '')
-      {
-        app.props.navigation.navigate('Groups');
-        app.props.navigation.setParams({otherParam: 'need to join a group'})
-      }
-      else
-      {
-        const {data: group} = await http.get(`/groups/${groupId}`);
-        app.props.navigation.setParams({otherParam: group.name})
-
-        // put together members by their status and present them in a table where you can click on users
-        // and see their status and ranking.
-
-        if (group && group.regulars && group.regulars.length > 0) {group.regulars = await app.getInformationForMembers(group.regulars)}
-        if (group && group.reserves && group.reserves.length > 0) {group.reserves = await app.getInformationForMembers(group.reserves)}
-        app.setState({group});
-      }
-    }
-    catch (error)
-    {
-      console.log(error);
-    }
-
+    app.getGroupInformation();
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
     });
@@ -100,6 +71,57 @@ export default class Home extends Component {
     });
   }
 
+  async getGroupInformation()
+  {
+    try {
+      const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+      console.log(currentUserInfo);
+      const displayName = currentUserInfo.displayName || '';
+      const groupId = currentUserInfo.groupId || '';
+      app.setState({
+        displayName,
+        groupId
+      })
+      if (groupId === '')
+      {
+        app.props.navigation.setParams({otherParam: 'need to join a group'})
+        app.props.navigation.navigate('Groups', {
+          onNavigateBack: app.getGroupInformation,
+          currentUserInfo,
+        });
+      }
+      else
+      {
+        const {data: group} = await http.get(`/groups/${groupId}`);
+        if (group)
+        {
+          app.props.navigation.setParams({otherParam: group.name});
+
+          // If group's next game is set and game date is in future update UI
+          if (group.nextGame)
+          {
+            const date = new Date(group.nextGame.gameDate);
+            const gameDate = moment(date);
+            const today = moment();
+            if (gameDate.diff(today) > 0) app.setState({ isSetNextGame: true });
+          }
+
+
+          // put together members by their status and present them in a table where you can click on users
+          // and see their status and ranking.
+
+          if (group && group.regulars && group.regulars.length > 0) {group.regulars = await app.getInformationForMembers(group.regulars)}
+          if (group && group.reserves && group.reserves.length > 0) {group.reserves = await app.getInformationForMembers(group.reserves)}
+          app.setState({group});
+        }
+      }
+    }
+    catch (error)
+    {
+      console.log(error);
+    }
+  }
+
   async getInformationForMembers(members)
   {
     const promises = members.map(id => http.get(`/getUserInfo?userId=${id}`));
@@ -109,7 +131,18 @@ export default class Home extends Component {
 
   setUpNextGame()
   {
-    app.props.navigation.navigate('NextGame');
+    const group = app.state.group;
+    const groupId = app.state.groupId;
+    app.props.navigation.navigate('NextGame', {
+      group,
+      groupId,
+      nextGameIsSet: app.justSetNextGame
+    });
+  }
+
+  justSetNextGame()
+  {
+    app.setState({ isSetNextGame: true });
   }
 
   renderSectionItem(item)
@@ -144,18 +177,48 @@ export default class Home extends Component {
     );
   }
 
-  render() {
+  renderFooter()
+  {
+    if (app.state.isSetNextGame)
+    {
+      return (
+        <View style={styles.footer}>
+          <Text style={{ left: 10 }}>RSVP: </Text>
+          <View style={styles.checkboxView}>
+            <CheckBox
+              style={ styles.checkbox }
+              onClick={() => app.setState({ rsvp: undefined })}
+              isChecked={ app.state.rsvp === undefined }
+              leftText={'Undecided'}
+              checkBoxColor={'grey'}
+            />
+            <CheckBox
+              style={ styles.checkbox }
+              onClick={() => app.setState({ rsvp: true })}
+              isChecked={ app.state.rsvp === true }
+              leftText={'Yes'}
+              checkBoxColor={'grey'}
+            />
+            <CheckBox
+              style={ styles.checkbox }
+              onClick={() => app.setState({ rsvp: false })}
+              isChecked={ app.state.rsvp === false }
+              leftText={'No'}
+              checkBoxColor={'grey'}
+            />
+          </View>
+          <View style={styles.button}>
+            <Button
+              background={styles.whiteBG}
+              textColor={styles.textColor}
+              onPress={this.setUpNextGame}>
+              Update Next Game
+            </Button>
+          </View>
+        </View>
+      );
+    }
     return (
-      <View style={styles.container}>
-      <SectionList
-        renderItem={({item}) => this.renderSectionItem(item)}
-        renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-        keyExtractor={(item, index) => index}
-        sections={[ // homogeneous rendering between sections
-          {data: [app.state.group.regulars], title: 'Regulars'},
-          {data: [app.state.group.reserves], title: 'Reserves'},
-        ]}
-        />
       <View style={styles.footer}>
         <View style={styles.button}>
           <Button
@@ -166,6 +229,23 @@ export default class Home extends Component {
           </Button>
         </View>
       </View>
+    );
+
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <SectionList
+          renderItem={({item}) => this.renderSectionItem(item)}
+          renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+          keyExtractor={(item, index) => index}
+          sections={[ // homogeneous rendering between sections
+            {data: [app.state.group.regulars], title: 'Regulars'},
+            {data: [app.state.group.reserves], title: 'Reserves'},
+          ]}
+          />
+        { app.renderFooter() }
       </View>
     );
   }
@@ -209,7 +289,14 @@ const styles = StyleSheet.create({
   },
   textColor: {
     color: '#000'
-  }
+  },
+  checkboxView: {
+    flexDirection: 'row',
+  },
+  checkbox: {
+    padding: 10,
+    width: '33%',
+  },
 });
 
 AppRegistry.registerComponent('Home', () => MyApp);
