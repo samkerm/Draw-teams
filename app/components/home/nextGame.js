@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import firebase from 'firebase';
 import { HeaderBackButton } from 'react-navigation';
-import { Button } from '../global/button';
+import Button from '../global/button';
 import LabledSlider from '../global/slider';
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';

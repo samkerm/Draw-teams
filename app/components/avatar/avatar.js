@@ -14,7 +14,7 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import { Button } from '../global/button';
+import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
 import axios from 'axios';
@@ -87,12 +87,6 @@ export default class Avatar extends Component {
   };
 
   async setAvatar() {
-    try {
-      const {data: response} = await http.get('/addMessage?original=Heythere');
-      console.log(response);
-    } catch (e) {
-      console.error(e);
-    }
     app.props.navigation.navigate('Home');
   }
 

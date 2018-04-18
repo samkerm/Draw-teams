@@ -3,7 +3,7 @@ import {
   AppRegistry,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import firebase from 'firebase';
+import firebase from './app/services/firebase';
 import Home from './app/components/home/home';
 import NextGame from './app/components/home/nextGame';
 import Login from './app/components/login/login';
@@ -22,16 +22,6 @@ const App = StackNavigator({
 
 export default class MyApp extends Component {
   componentWillMount() {
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: 'AIzaSyApyr_GVy-5rC4s0laqcPb-SKdAtU70FBU',
-      authDomain: 'draw-groups.firebaseapp.com',
-      databaseURL: 'https://draw-teams.firebaseio.com',
-      projectId: 'draw-teams',
-      storageBucket: 'draw-teams.appspot.com',
-      messagingSenderId: '853780675945',
-    };
-    firebase.initializeApp(firebaseConfig);
   }
   render() {
     return <App />;

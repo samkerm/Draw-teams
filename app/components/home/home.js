@@ -13,7 +13,7 @@ import {
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
-import { Button } from '../global/button';
+import Button from '../global/button';
 import CheckBox from 'react-native-check-box';
 import Groups from '../groups/groups';
 import NextGame from './nextGame';

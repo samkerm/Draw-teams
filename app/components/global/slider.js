@@ -8,7 +8,7 @@ import {
   Slider
 } from 'react-native';
 
-class LabledSlider extends Component {
+export default class LabledSlider extends Component {
   state = {
     value: 0
   }
@@ -56,5 +56,3 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   }
 });
-
-export default LabledSlider;

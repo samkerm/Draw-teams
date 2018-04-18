@@ -10,10 +10,11 @@ import {
   Alert
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { Input } from '../global/input';
-import { Button } from '../global/button';
+import Input from '../global/input';
+import Button from '../global/button';
 import firebase from 'firebase';
 import axios from 'axios';
+import notifications from '../../services/push-notifications';
 
 let app;
 

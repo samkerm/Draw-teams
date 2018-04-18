@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import firebase from 'firebase';
 import { StackNavigator, HeaderBackButton } from 'react-navigation';
-import { Input } from '../global/input';
-import { Button } from '../global/button';
+import Input from '../global/input';
+import Button from '../global/button';
 import LabledSlider from '../global/slider';
 import axios from 'axios';
 

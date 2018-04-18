@@ -5,7 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-class Button extends Component {
+export default class Button extends Component {
 
   constructor(props) {
    super(props)
@@ -39,5 +39,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export { Button };
