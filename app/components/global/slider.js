@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 
 export default class LabledSlider extends Component {
-  state = {
-    value: 0
-  }
 
   constructor(props) {
-   super(props)
+   super(props);
+    this.state = {
+      value: 0
+    };
   }
 
   render() {
@@ -29,7 +29,7 @@ export default class LabledSlider extends Component {
           onSlidingComplete={ this.props.onSlidingComplete }
           step={ 1 }
         />
-        <Text style={ styles.value }>{ this.state.value }</Text>
+        <Text style={ styles.value }>{ this.state.value || this.props.value }</Text>
       </View>
     );
   }

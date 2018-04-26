@@ -28,7 +28,7 @@ export default class NextGame extends Component {
   constructor(props) {
     super(props);
     const user = firebase.auth().currentUser;
-    this.state = {
+    let nextGame = {
       numberOfPlayers: 0,
       gameDate: moment().format('dddd, YYYY-MMM-DD kk:mm'),
       regularsNotification: moment().format('dddd, YYYY-MMM-DD kk:mm'),
@@ -36,32 +36,18 @@ export default class NextGame extends Component {
       weeklyRepeat: false,
       monthlyRepeat: false,
     };
+    const group = this.props.navigation.state.params.group
+    if (group.nextGame && !_.isEmpty(group.nextGame)) {
+      nextGame = group.nextGame;
+    }
+
+    this.state = nextGame;
 
     http = axios.create();
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     app = this;
-    // Get nextGame if already existing
-    // If gameDate is in the past only update none gameDate related parameters
-    const group = app.props.navigation.state.params.group
-    console.log(group);
-    if (group.nextGame && !_.isEmpty(group.nextGame))
-    {
-      app.setState({
-        numberOfPlayers: group.nextGame.numberOfPlayers,
-        gameDate: group.nextGame.gameDate,
-        regularsNotification: group.nextGame.regularsNotification,
-        reservesNotification: group.nextGame.reservesNotification,
-        weeklyRepeat: group.nextGame.weeklyRepeat,
-        monthlyRepeat: group.nextGame.monthlyRepeat,
-      });
-    }
-  }
-
-  componentDidUpdate()
-  {
-    console.log(app.state, 'Debug');
   }
 
   _weeklyRepeat()
