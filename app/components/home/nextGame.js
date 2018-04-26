@@ -59,14 +59,32 @@ export default class NextGame extends Component {
     }
   }
 
+  componentDidUpdate()
+  {
+    console.log(app.state, 'Debug');
+  }
+
+  _weeklyRepeat()
+  {
+    app.setState({ weeklyRepeat: !app.state.weeklyRepeat});
+  }
+
+  _monthlyRepeat() {
+    app.setState({ monthlyRepeat: !app.state.monthlyRepeat });
+  }
+
   async setUpNextGame()
   {
     const {navigation} = app.props;
     try {
-      await http.post(`/groups/${navigation.state.params.groupId}/nextgame`, app.state);
-      navigation.state.params.nextGameIsSet();
-      navigation.goBack();
-      console.log('goBack');
+      const {data: response} = await http.post(`/groups/${navigation.state.params.groupId}/nextgame`, app.state);
+      console.log(response);
+      if (response)
+      {
+        console.log('goBack');
+        navigation.state.params.nextGameIsSet();
+        navigation.goBack();
+      }
     } catch (e) {
       console.log('Error');
       console.log(e)
@@ -171,14 +189,14 @@ export default class NextGame extends Component {
           <View style={styles.checkboxView}>
             <CheckBox
               style={ styles.checkbox }
-              onClick={(val) => app.setState({ weeklyRepeat: val })}
+              onClick={() => this._weeklyRepeat()}
               isChecked={ app.state.weeklyRepeat }
               leftText={'Every week'}
               checkBoxColor={'grey'}
             />
             <CheckBox
               style={ styles.checkbox }
-              onClick={(val) => app.setState({ monthlyRepeat: val })}
+              onClick={() => this._monthlyRepeat()}
               isChecked={ app.state.monthlyRepeat }
               leftText={'Every month'}
               checkBoxColor={'grey'}

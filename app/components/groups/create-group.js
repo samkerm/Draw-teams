@@ -5,8 +5,8 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import { Input } from '../global/input';
-import { Button } from '../global/button';
+import Input from '../global/input';
+import Button from '../global/button';
 import { Dropdown } from 'react-native-material-dropdown';
 
 export default class CreateGroup extends Component {

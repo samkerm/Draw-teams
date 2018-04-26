@@ -143,6 +143,7 @@ export default class Home extends Component {
   justSetNextGame()
   {
     app.setState({ isSetNextGame: true });
+    app.getGroupInformation();
   }
 
   renderSectionItem(item)

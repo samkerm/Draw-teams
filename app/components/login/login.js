@@ -45,7 +45,7 @@ export default class Login extends Component {
         // Set up axios globally
         firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken)
         {
-          axios.defaults.baseURL = 'http://localhost:5000/draw-teams/us-central1/app';
+          axios.defaults.baseURL = 'http://localhost:5000/draw-teams/us-central1/app';// https://us-central1-draw-teams.cloudfunctions.net/app // http://localhost:5000/draw-teams/us-central1/app
           axios.defaults.timeout = 30000;
           axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
         }).catch(function(error)

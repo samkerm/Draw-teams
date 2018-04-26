@@ -7,8 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { Input } from '../global/input';
-import { Button } from '../global/button';
+import Input from '../global/input';
+import Button from '../global/button';
 
 export default class JoinGroup extends Component {
   constructor(props) {

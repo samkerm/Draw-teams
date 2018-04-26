@@ -9,7 +9,7 @@ import {
   Spacer
 } from 'react-native';
 import { HeaderBackButton } from 'react-navigation';
-import { Button } from '../global/button';
+import Button from '../global/button';
 import CreateGroup from './create-group';
 import JoinGroup from './join-group';
 import firebase from 'firebase';
