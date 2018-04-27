@@ -51,7 +51,7 @@ export default class Home extends Component {
       displayName: '',
       groupId: '',
       isSetNextGame: false,
-      rsvp: undefined,
+      rsvp: 'NA',
     };
 
     http = axios.create();
@@ -146,12 +146,13 @@ export default class Home extends Component {
     app.getGroupInformation();
   }
 
-  _rsvp(status)
+  async _rsvp(status)
   {
+    const {data: rsvp} = await http.post(`/groups/${this.state.groupId}/rsvp`, { rsvp: status });
     app.setState({
-      rsvp: status
-    })
-    // http.post(`/groups/${groupId}/rsvp`,{rsvp: this.status});
+      rsvp,
+    });
+    console.log(rsvp, 'rsvp');
   }
 
   renderSectionItem(item)
@@ -196,22 +197,22 @@ export default class Home extends Component {
           <View style={styles.checkboxView}>
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => _rsvp(undefined)}
-              isChecked={ app.state.rsvp === undefined }
+              onClick={() => app._rsvp('NA')}
+              isChecked={app.state.rsvp === 'NA'}
               leftText={'Undecided'}
               checkBoxColor={'grey'}
             />
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => _rsvp(true)}
-              isChecked={ app.state.rsvp === true }
+              onClick={() => app._rsvp('YES')}
+              isChecked={app.state.rsvp === 'YES'}
               leftText={'Yes'}
               checkBoxColor={'grey'}
             />
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => _rsvp(false)}
-              isChecked={ app.state.rsvp === false }
+              onClick={() => app._rsvp('NO')}
+              isChecked={app.state.rsvp === 'NO'}
               leftText={'No'}
               checkBoxColor={'grey'}
             />
