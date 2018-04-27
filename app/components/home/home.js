@@ -146,6 +146,14 @@ export default class Home extends Component {
     app.getGroupInformation();
   }
 
+  _rsvp(status)
+  {
+    app.setState({
+      rsvp: status
+    })
+    // http.post(`/groups/${groupId}/rsvp`,{rsvp: this.status});
+  }
+
   renderSectionItem(item)
   {
     let members = [];
@@ -188,21 +196,21 @@ export default class Home extends Component {
           <View style={styles.checkboxView}>
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => app.setState({ rsvp: undefined })}
+              onClick={() => _rsvp(undefined)}
               isChecked={ app.state.rsvp === undefined }
               leftText={'Undecided'}
               checkBoxColor={'grey'}
             />
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => app.setState({ rsvp: true })}
+              onClick={() => _rsvp(true)}
               isChecked={ app.state.rsvp === true }
               leftText={'Yes'}
               checkBoxColor={'grey'}
             />
             <CheckBox
               style={ styles.checkbox }
-              onClick={() => app.setState({ rsvp: false })}
+              onClick={() => _rsvp(false)}
               isChecked={ app.state.rsvp === false }
               leftText={'No'}
               checkBoxColor={'grey'}
