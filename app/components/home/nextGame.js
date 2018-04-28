@@ -10,7 +10,7 @@ import { HeaderBackButton } from 'react-navigation';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';
 import DatePicker from 'react-native-datepicker';
-import CheckBox from 'react-native-check-box';
+import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
@@ -174,18 +174,22 @@ export default class NextGame extends Component {
           <Text>Repeat</Text>
           <View style={styles.checkboxView}>
             <CheckBox
-              style={ styles.checkbox }
-              onClick={() => this._weeklyRepeat()}
-              isChecked={ app.state.weeklyRepeat }
-              leftText={'Every week'}
-              checkBoxColor={'grey'}
+              left
+              title='Every week'
+              iconRight
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={app.state.weeklyRepeat}
+              onPress={() => this._weeklyRepeat()}
             />
             <CheckBox
-              style={ styles.checkbox }
-              onClick={() => this._monthlyRepeat()}
-              isChecked={ app.state.monthlyRepeat }
-              leftText={'Every month'}
-              checkBoxColor={'grey'}
+              right
+              title='Every month'
+              iconRight
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={app.state.monthlyRepeat}
+              onPress={() => this._monthlyRepeat()}
             />
           </View>
         </View>
@@ -214,10 +218,6 @@ const styles = StyleSheet.create({
   },
   checkboxView: {
     flexDirection: 'row',
-  },
-  checkbox: {
-    padding: 10,
-    width: '50%',
   },
   footer: {
     position: 'absolute',

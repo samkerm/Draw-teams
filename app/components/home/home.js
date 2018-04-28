@@ -14,7 +14,7 @@ import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import Button from '../global/button';
-import CheckBox from 'react-native-check-box';
+import { CheckBox } from 'react-native-elements';
 import Groups from '../groups/groups';
 import NextGame from './nextGame';
 import axios from 'axios';
@@ -196,25 +196,31 @@ export default class Home extends Component {
           <Text style={{ left: 10 }}>RSVP: </Text>
           <View style={styles.checkboxView}>
             <CheckBox
-              style={ styles.checkbox }
-              onClick={() => app._rsvp('NA')}
-              isChecked={app.state.rsvp === 'NA'}
-              leftText={'Undecided'}
-              checkBoxColor={'grey'}
+              left
+              title='Undecided'
+              iconRight
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={(app.state.rsvp === 'NA')}
+              onPress={() => app._rsvp('NA')}
             />
             <CheckBox
-              style={ styles.checkbox }
-              onClick={() => app._rsvp('YES')}
-              isChecked={app.state.rsvp === 'YES'}
-              leftText={'Yes'}
-              checkBoxColor={'grey'}
+              center
+              title='Yes'
+              iconRight
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={(app.state.rsvp === 'YES')}
+              onPress={() => app._rsvp('YES')}
             />
             <CheckBox
-              style={ styles.checkbox }
-              onClick={() => app._rsvp('NO')}
-              isChecked={app.state.rsvp === 'NO'}
-              leftText={'No'}
-              checkBoxColor={'grey'}
+              right
+              title='No'
+              iconRight
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={(app.state.rsvp === 'NO')}
+              onPress={() => app._rsvp('NO')}
             />
           </View>
           <View style={styles.button}>
@@ -302,10 +308,6 @@ const styles = StyleSheet.create({
   },
   checkboxView: {
     flexDirection: 'row',
-  },
-  checkbox: {
-    padding: 10,
-    width: '33%',
   },
 });
 
