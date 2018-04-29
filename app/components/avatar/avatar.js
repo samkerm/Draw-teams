@@ -121,29 +121,36 @@ export default class Avatar extends Component {
   }
 
   render() {
-    // const image = require(app.state.avatarSource);
     return (
       <View style={styles.container}>
         <TouchableOpacity 
           onPress={this._handleButtonPress}>
-          <Image
-            style={styles.avatarImage}
-            source={{ uri: '../../images/icons/avatar.png' }}
-          />
+          {app.state.avatarSource === '../../images/icons/avatar.png' ? 
+            <Image style={styles.avatarImageIcon} source={require('../../images/icons/avatar.png')} /> :
+            <Image style={styles.avatarImage} source={app.state.avatarSource} />
+          }
         </TouchableOpacity>
-        {/* <View style={styles.button}>
-          <Button onPress={this._handleButtonPress}>Load Images</Button>
-        </View> */}
         <View style={styles.footer}>
           <View style={styles.button}>
-            <Button
-              background={styles.whiteBG}
-              textColor={styles.textColor}
-              onPress={this.setUpNextGame}
-              disabled={app.state.avatarImage !== '../../images/icons/avatar.png'}
-              >
-              Set Avatar
-          </Button>
+          {
+              app.state.avatarSource === '../../images/icons/avatar.png' ? 
+                <Button
+                  background={styles.greyBG}
+                  textColor={styles.greyText}
+                  onPress={this.setUpNextGame}
+                  disabled={true}
+                >
+                  Set Avatar
+                </Button>
+                :
+                <Button
+                  background={styles.whiteBG}
+                  textColor={styles.blackText}
+                  onPress={this.setUpNextGame}
+                >
+                  Set Avatar
+                </Button>
+          }
           </View>
         </View>
      </View>
@@ -173,14 +180,27 @@ const styles = StyleSheet.create({
   whiteBG: {
     backgroundColor: '#FFF',
   },
-  textColor: {
+  greyBG: {
+    backgroundColor: '#DCDCDC',
+  },
+  blackText: {
     color: '#000'
   },
-  avatarImage: {
+  greyText: {
+    color: '#A9A9A9'
+  },
+  avatarImageIcon: {
     alignSelf: 'center',
-    width: '72%',
-    height: '60%',
-    marginTop: 100
+    width: 250,
+    height: 250,
+    marginTop: 100,
+  },
+  avatarImage : {
+    alignSelf: 'center',
+    width: 250,
+    height: 250,
+    marginTop: 100,
+    borderRadius: 125,
   }
 });
 
