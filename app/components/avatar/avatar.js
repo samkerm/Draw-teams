@@ -10,15 +10,15 @@ import {
   AppRegistry,
   BackHandler,
   Alert,
-  CameraRoll,
   Image,
-  ScrollView
+  TouchableOpacity,
 } from 'react-native';
 import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
 import axios from 'axios';
 
+var ImagePicker = require('react-native-image-picker');
 let app;
 let http;
 
@@ -32,7 +32,7 @@ export default class Avatar extends Component {
   constructor() {
     super();
     this.state = {
-      photos: []
+      avatarSource: '../../images/icons/avatar.png',
     }
 
     http = axios.create();
@@ -74,16 +74,46 @@ export default class Avatar extends Component {
   }
 
   _handleButtonPress = () => {
-   CameraRoll.getPhotos({
-       first: 20,
-       assetType: 'Photos',
-     })
-     .then(r => {
-       this.setState({ photos: r.edges });
-     })
-     .catch((err) => {
-        //Error Loading Images
-     });
+    // More info on all the options is below in the README...just some common use cases shown here
+    var options = {
+      title: 'Select Avatar',
+      // customButtons: [
+      //   { name: 'fb', title: 'Choose Photo from Facebook' },
+      // ],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+    /**
+     * The first arg is the options object for customization (it can also be null or omitted for default options),
+     * The second arg is the callback which sends object: response (more info below in README)
+    */
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      // else if (response.customButton) {
+      //   console.log('User tapped custom button: ', response.customButton);
+      // }
+      else {
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+
+        this.setState({
+          avatarSource: source
+        });
+      }
+    });
   };
 
   async setAvatar() {
@@ -91,28 +121,31 @@ export default class Avatar extends Component {
   }
 
   render() {
+    // const image = require(app.state.avatarSource);
     return (
-      <View>
-        <View style={styles.button}>
+      <View style={styles.container}>
+        <TouchableOpacity 
+          onPress={this._handleButtonPress}>
+          <Image
+            style={styles.avatarImage}
+            source={{ uri: '../../images/icons/avatar.png' }}
+          />
+        </TouchableOpacity>
+        {/* <View style={styles.button}>
           <Button onPress={this._handleButtonPress}>Load Images</Button>
+        </View> */}
+        <View style={styles.footer}>
+          <View style={styles.button}>
+            <Button
+              background={styles.whiteBG}
+              textColor={styles.textColor}
+              onPress={this.setUpNextGame}
+              disabled={app.state.avatarImage !== '../../images/icons/avatar.png'}
+              >
+              Set Avatar
+          </Button>
+          </View>
         </View>
-       <ScrollView>
-         {this.state.photos.map((p, i) => {
-         return (
-           <Image
-             key={i}
-             style={{
-               width: 300,
-               height: 100,
-             }}
-             source={{ uri: p.node.image.uri }}
-           />
-         );
-       })}
-       </ScrollView>
-       <View style={styles.button}>
-         <Button onPress={this.setAvatar}>Set Avatar</Button>
-       </View>
      </View>
     );
   }
@@ -121,12 +154,33 @@ export default class Avatar extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    paddingTop: 20,
   },
   button: {
     marginRight: 10,
     marginLeft: 10,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+  },
+  button: {
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  whiteBG: {
+    backgroundColor: '#FFF',
+  },
+  textColor: {
+    color: '#000'
+  },
+  avatarImage: {
+    alignSelf: 'center',
+    width: '72%',
+    height: '60%',
+    marginTop: 100
   }
 });
 
