@@ -24,17 +24,29 @@ import moment from 'moment';
 let app;
 let http;
 
+// Temporarly putting this function here for dev
+// TODO: needs to be removed later
+function _logout() {
+  firebase.auth().signOut()
+    .then(function () {
+      app.props.navigation.navigate('Login');
+    }, function (error) {
+      app.showAlert('Sign Out Error', error.message);
+    });
+}
+
 export default class Home extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-
     return {
       title: params ? params.otherParam : '',
       headerLeft: null,
       headerRight: (
-        <TouchableOpacity>
-          <Image source={require('../../images/icons/profile-edit.png')}
-                 style={styles.editProfileIcon}
+        <TouchableOpacity
+          onPress={() => { _logout() }}>
+          <Image 
+            style={styles.editProfileIcon}
+            source={require('../../images/icons/profile-edit.png')}
           />
         </TouchableOpacity>
       ),
@@ -57,7 +69,8 @@ export default class Home extends Component {
     http = axios.create();
   }
 
-  componentWillMount() {
+  componentWillMount()
+  {
     app = this;
     app.getGroupInformation();
     BackHandler.addEventListener('hardwareBackPress', function() {
@@ -65,7 +78,8 @@ export default class Home extends Component {
     });
   }
 
-  componentWillUnmount() {
+  componentWillUnmount()
+  {
     BackHandler.removeEventListener('hardwareBackPress', function() {
       return false;
     });
@@ -74,7 +88,7 @@ export default class Home extends Component {
   async getGroupInformation()
   {
     try {
-      const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+      const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`); 
       console.log(currentUserInfo);
       const displayName = currentUserInfo.displayName || '';
       const groupId = currentUserInfo.groupId || '';
@@ -118,7 +132,7 @@ export default class Home extends Component {
     }
     catch (error)
     {
-      console.log(error);
+      console.error(error);
     }
   }
 

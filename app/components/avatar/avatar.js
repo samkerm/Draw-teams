@@ -12,13 +12,15 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
 import axios from 'axios';
 
-var ImagePicker = require('react-native-image-picker');
+const ImagePicker = require('react-native-image-picker');
+const storage = firebase.storage();
 let app;
 let http;
 
@@ -33,6 +35,8 @@ export default class Avatar extends Component {
     super();
     this.state = {
       avatarSource: '../../images/icons/avatar.png',
+      selectedAvatar: '',
+      isUploadingImage: false
     }
 
     http = axios.create();
@@ -57,7 +61,7 @@ export default class Avatar extends Component {
     .then(function() {
       app.props.navigation.navigate('Login');
     }, function(error) {
-      this.showAlert('Sign Out Error', error.message);
+      app.showAlert('Sign Out Error', error.message);
     });
   }
 
@@ -75,7 +79,7 @@ export default class Avatar extends Component {
 
   _handleButtonPress = () => {
     // More info on all the options is below in the README...just some common use cases shown here
-    var options = {
+    const options = {
       title: 'Select Avatar',
       // customButtons: [
       //   { name: 'fb', title: 'Choose Photo from Facebook' },
@@ -103,42 +107,59 @@ export default class Avatar extends Component {
       //   console.log('User tapped custom button: ', response.customButton);
       // }
       else {
-        let source = { uri: response.uri };
-
+        const source = { uri: response.uri };
+        const base64Image = { uri: 'data:image/jpeg;base64,' + response.data };
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
 
-        this.setState({
-          avatarSource: source
+        app.setState({
+          avatarSource: source,
+          selectedAvatar: base64Image
         });
       }
     });
   };
 
-  async setAvatar() {
-    app.props.navigation.navigate('Home');
+  async _setAvatar() {
+    const user = firebase.auth().currentUser;
+    const storageRef = storage.ref().child('avatars').child(user.uid);
+    app.setState({ isUploadingImage: true})
+    try {
+      // Data URL string
+      const snapshot = await storageRef.putString(app.state.selectedAvatar.uri, 'data_url');
+      const url = await snapshot.ref.getDownloadURL();
+      await user.updateProfile({
+        photoURL: url
+      });
+      app.props.navigation.navigate('Home');
+    } catch (error) {
+      app.setState({ isUploadingImage: false })
+      console.error(error);
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity 
-          onPress={this._handleButtonPress}>
+          onPress={app._handleButtonPress}
+          disabled={this.state.isUploadingImage}>
           {app.state.avatarSource === '../../images/icons/avatar.png' ? 
             <Image style={styles.avatarImageIcon} source={require('../../images/icons/avatar.png')} /> :
-            <Image style={styles.avatarImage} source={app.state.avatarSource} />
+            <Image style={styles.avatarImage} source={app.state.selectedAvatar} />
           }
         </TouchableOpacity>
         <View style={styles.footer}>
           <View style={styles.button}>
           {
-              app.state.avatarSource === '../../images/icons/avatar.png' ? 
+              app.state.avatarSource === '../../images/icons/avatar.png' || this.state.isUploadingImage ? 
                 <Button
                   background={styles.greyBG}
                   textColor={styles.greyText}
-                  onPress={this.setUpNextGame}
+                  onPress={app._setAvatar}
                   disabled={true}
+                  showIndicator={this.state.isUploadingImage}
                 >
                   Set Avatar
                 </Button>
@@ -146,7 +167,7 @@ export default class Avatar extends Component {
                 <Button
                   background={styles.whiteBG}
                   textColor={styles.blackText}
-                  onPress={this.setUpNextGame}
+                  onPress={app._setAvatar}
                 >
                   Set Avatar
                 </Button>

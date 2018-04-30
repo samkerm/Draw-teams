@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  ActivityIndicator
 } from 'react-native';
 
 export default class Button extends Component {
@@ -11,13 +12,24 @@ export default class Button extends Component {
    super(props)
   }
 
+  renderActivityIndicator() {
+    if (this.props.showIndicator === true) {
+      return (
+        <ActivityIndicator size='small' />
+      );
+    }
+    return (
+      <Text style={[styles.text, this.props.textColor]}> {this.props.children}</Text>
+    );
+  }
+
   render() {
     return (
       <TouchableOpacity
         {...this.props}
         style={[styles.button, this.props.background]}>
 
-        <Text style={[styles.text, this.props.textColor]}> { this.props.children }</Text>
+        {this.renderActivityIndicator()}
 
       </TouchableOpacity>
     );
