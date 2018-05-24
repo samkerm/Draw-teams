@@ -88,7 +88,17 @@ export default class Home extends Component {
   async getGroupInformation()
   {
     try {
-      const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`); 
+      // Set up axios globally
+      const idToken = await firebase.auth().currentUser.getIdToken( /* forceRefresh */ true)
+      const response = await fetch(`http://localhost:5000/draw-teams/us-central1/app/getUserInfo?userId=${app.state.userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+        },
+      });
+      const currentUserInfo = await response.json();
+      // const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
+      
       console.log(currentUserInfo);
       const displayName = currentUserInfo.displayName || '';
       const groupId = currentUserInfo.groupId || '';
@@ -133,6 +143,7 @@ export default class Home extends Component {
     catch (error)
     {
       console.error(error);
+      _logout();
     }
   }
 
