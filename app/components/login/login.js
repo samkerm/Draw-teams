@@ -7,7 +7,8 @@ import {
   Text,
   View,
   ActivityIndicator,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Input from '../global/input';
@@ -15,6 +16,7 @@ import Button from '../global/button';
 import firebase from 'firebase';
 import axios from 'axios';
 import notifications from '../../services/push-notifications';
+import { RegisterWithToken } from '../../services/network';
 
 let app;
 
@@ -38,20 +40,11 @@ export default class Login extends Component {
     app = this;
     const { navigate } = this.props.navigation;
     app.setState({ authenticating: true });
-    firebase.auth().onAuthStateChanged(function(user)
+    firebase.auth().onAuthStateChanged(async (user) =>
     {
       if (user && app.state.authenticating)
       {
-        // Set up axios globally
-        firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken)
-        {
-          axios.defaults.baseURL = 'http://localhost:5000/draw-teams/us-central1/app';// https://us-central1-draw-teams.cloudfunctions.net/app // http://localhost:5000/draw-teams/us-central1/app
-          axios.defaults.timeout = 30000;
-          axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
-        }).catch(function(error)
-        {
-          console.error(error);
-        });
+        await RegisterWithToken();
 
         if (user.displayName && user.photoURL)
         {

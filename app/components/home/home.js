@@ -9,6 +9,7 @@ import {
   BackHandler,
   SectionList,
   ListItem,
+  AsyncStorage,
 } from 'react-native';
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
@@ -20,9 +21,9 @@ import NextGame from './nextGame';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
+import { Fetch } from '../../services/network';
 
 let app;
-let http;
 
 // Temporarly putting this function here for dev
 // TODO: needs to be removed later
@@ -65,8 +66,6 @@ export default class Home extends Component {
       isSetNextGame: false,
       rsvp: 'NA',
     };
-
-    http = axios.create();
   }
 
   componentWillMount()
@@ -88,18 +87,9 @@ export default class Home extends Component {
   async getGroupInformation()
   {
     try {
-      // Set up axios globally
-      const idToken = await firebase.auth().currentUser.getIdToken( /* forceRefresh */ true)
-      const response = await fetch(`http://localhost:5000/draw-teams/us-central1/app/getUserInfo?userId=${app.state.userId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-        },
-      });
-      const currentUserInfo = await response.json();
-      // const {data: currentUserInfo} = await http.get(`/getUserInfo?userId=${app.state.userId}`);
-      
+      const currentUserInfo = await Fetch('GET', `/getUserInfo?userId=${app.state.userId}`);
       console.log(currentUserInfo);
+
       const displayName = currentUserInfo.displayName || '';
       const groupId = currentUserInfo.groupId || '';
       app.setState({
@@ -116,7 +106,9 @@ export default class Home extends Component {
       }
       else
       {
-        const {data: group} = await http.get(`/groups/${groupId}`);
+        const group = await Fetch('GET', `/groups/${groupId}`);
+
+        console.log(group);
         if (group)
         {
           app.props.navigation.setParams({otherParam: group.name});
@@ -149,9 +141,8 @@ export default class Home extends Component {
 
   async getInformationForMembers(members)
   {
-    const promises = members.map(id => http.get(`/getUserInfo?userId=${id}`));
-    const people = await Promise.all(promises);
-    return people.map(p => p.data).filter(p => p);
+    const promises = members.map(id => Fetch('GET', `/getUserInfo?userId=${id}`));
+    return await Promise.all(promises);
   }
 
   setUpNextGame()
@@ -173,7 +164,9 @@ export default class Home extends Component {
 
   async _rsvp(status)
   {
-    const {data: rsvp} = await http.post(`/groups/${this.state.groupId}/rsvp`, { rsvp: status });
+    const rsvp = await Fetch('GET', `/groups/${this.state.groupId}/rsvp`, {
+      rsvp: status
+    });
     app.setState({
       rsvp,
     });
