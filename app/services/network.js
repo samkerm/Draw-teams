@@ -21,9 +21,11 @@ export async function Fetch(method, url, body) {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
-                body,
+                body: JSON.stringify(body),
             });
-            return await response.json();
+            const data = await response.json();
+            console.log(data);
+            return data;
         }
         return new Error('Wasn\'t able to retriebve stored token locally');
     } catch (error) {

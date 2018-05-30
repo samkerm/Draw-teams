@@ -64,7 +64,10 @@ export default class Home extends Component {
       displayName: '',
       groupId: '',
       isSetNextGame: false,
-      rsvp: 'NA',
+      isUploadingData: false,
+      rsvpNA: true,
+      rsvpNo: false,
+      rsvpYes: false,
     };
   }
 
@@ -88,8 +91,6 @@ export default class Home extends Component {
   {
     try {
       const currentUserInfo = await Fetch('GET', `/getUserInfo?userId=${app.state.userId}`);
-      console.log(currentUserInfo);
-
       const displayName = currentUserInfo.displayName || '';
       const groupId = currentUserInfo.groupId || '';
       app.setState({
@@ -107,8 +108,7 @@ export default class Home extends Component {
       else
       {
         const group = await Fetch('GET', `/groups/${groupId}`);
-
-        console.log(group);
+        
         if (group)
         {
           app.props.navigation.setParams({otherParam: group.name});
@@ -116,10 +116,15 @@ export default class Home extends Component {
           // If group's next game is set and game date is in future update UI
           if (group.nextGame)
           {
+            group.nextGame = group.nextGame;
             const date = new Date(group.nextGame.gameDate);
             const gameDate = moment(date);
             const today = moment();
-            if (gameDate.diff(today) > 0) app.setState({ isSetNextGame: true });
+            if (gameDate.diff(today) > 0)
+            {
+              app.setState({ isSetNextGame: true });
+              app._updateReceivedRsvp(group.nextGame);
+            }
           }
 
 
@@ -162,15 +167,54 @@ export default class Home extends Component {
     app.getGroupInformation();
   }
 
+  _updateReceivedRsvp(nextGame)
+  {
+    const rsvpYeses = nextGame.rsvpYes || [];
+    const rsvpNos = nextGame.rsvpNo || [];
+    if (rsvpYeses.some((val) => val === app.state.userId)) app._setRsvpTo('YES');
+    if (rsvpNos.some((val) => val === app.state.userId)) app._setRsvpTo('NO');
+  }
+
   async _rsvp(status)
   {
-    const rsvp = await Fetch('GET', `/groups/${this.state.groupId}/rsvp`, {
-      rsvp: status
-    });
-    app.setState({
-      rsvp,
-    });
-    console.log(rsvp, 'rsvp');
+    app.setState({ isUploadingData: true});
+    try {
+      const rsvp = await Fetch('POST', `/groups/${this.state.groupId}/rsvp`, {rsvp: status});
+      app._setRsvpTo(rsvp.status)
+    } catch (error) {
+      console.error(error);
+      // TODO: Show alert
+    }
+    app.setState({ isUploadingData: false});
+  }
+
+  _setRsvpTo(status) {
+    switch (status) {
+      case 'NA':
+        app.setState({
+          rsvpNA: true,
+          rsvpNo: false,
+          rsvpYes: false
+        });
+        break;
+      case 'NO':
+        app.setState({
+          rsvpNA: false,
+          rsvpNo: true,
+          rsvpYes: false
+        });
+        break;
+      case 'YES':
+        app.setState({
+          rsvpNA: false,
+          rsvpNo: false,
+          rsvpYes: true
+        });
+        break;
+      default:
+        break;
+    }
+    // app.setState({ rsvp });
   }
 
   renderSectionItem(item)
@@ -219,8 +263,9 @@ export default class Home extends Component {
               iconRight
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
-              checked={(app.state.rsvp === 'NA')}
+              checked={(app.state.rsvpNA)}
               onPress={() => app._rsvp('NA')}
+              disabled={this.state.isUploadingData}
             />
             <CheckBox
               center
@@ -228,8 +273,9 @@ export default class Home extends Component {
               iconRight
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
-              checked={(app.state.rsvp === 'YES')}
+              checked={(app.state.rsvpYes)}
               onPress={() => app._rsvp('YES')}
+              disabled={this.state.isUploadingData}
             />
             <CheckBox
               right
@@ -237,8 +283,9 @@ export default class Home extends Component {
               iconRight
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
-              checked={(app.state.rsvp === 'NO')}
+              checked={(app.state.rsvpNo)}
               onPress={() => app._rsvp('NO')}
+              disabled={this.state.isUploadingData}
             />
           </View>
           <View style={styles.button}>

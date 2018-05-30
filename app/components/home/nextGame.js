@@ -14,9 +14,9 @@ import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
+import { Fetch } from '../../services/network';
 
 let app;
-let http;
 
 export default class NextGame extends Component {
   static navigationOptions = {
@@ -42,8 +42,6 @@ export default class NextGame extends Component {
     }
 
     this.state = nextGame;
-
-    http = axios.create();
   }
 
   componentWillMount() {
@@ -63,7 +61,7 @@ export default class NextGame extends Component {
   {
     const {navigation} = app.props;
     try {
-      const {data: response} = await http.post(`/groups/${navigation.state.params.groupId}/nextgame`, app.state);
+      const response = await Fetch('POST', `/groups/${navigation.state.params.groupId}/nextgame`, app.state);
       console.log(response);
       if (response)
       {

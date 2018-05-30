@@ -22,7 +22,6 @@ import axios from 'axios';
 const ImagePicker = require('react-native-image-picker');
 const storage = firebase.storage();
 let app;
-let http;
 
 export default class Avatar extends Component {
   static navigationOptions = {
@@ -38,8 +37,6 @@ export default class Avatar extends Component {
       selectedAvatar: '',
       isUploadingImage: false
     }
-
-    http = axios.create();
   }
 
   componentWillMount() {

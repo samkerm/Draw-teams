@@ -15,9 +15,9 @@ import Input from '../global/input';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';
 import axios from 'axios';
+import { Fetch } from '../../services/network';
 
 let app;
-let http;
 
 export default class Profile extends Component {
 
@@ -44,8 +44,6 @@ export default class Profile extends Component {
         goalie: 0
       }
     };
-
-    http = axios.create();
   }
 
   componentWillMount() {
@@ -114,8 +112,11 @@ export default class Profile extends Component {
     if (this.state.displayName && this.state.displayName !== '')
     {
       try {
-        await http.post('/users/updateDisplayName', {displayName: app.state.displayName});
-        await http.post('/users/initializeUserWithRatings', {ratings: app.state.ratings, displayName: app.state.displayName});
+        await Fetch('POST', '/users/updateDisplayName', {displayName: app.state.displayName});
+        await Fetch('POST', '/users/initializeUserWithRatings', {
+          ratings: app.state.ratings,
+          displayName: app.state.displayName
+        });
         // if (createdUser.photoURL)
         // {
         //   app.props.navigation.navigate('Home');

@@ -14,9 +14,9 @@ import CreateGroup from './create-group';
 import JoinGroup from './join-group';
 import firebase from 'firebase';
 import axios from 'axios';
+import { Fetch } from '../../services/network';
 
 let app;
-let http;
 
 export default class Groups extends Component {
   static navigationOptions = {
@@ -35,8 +35,6 @@ export default class Groups extends Component {
       groupGameType: '',
       foundGroups: [],
     };
-
-    http = axios.create();
   }
 
   componentWillMount() {
@@ -94,7 +92,7 @@ export default class Groups extends Component {
 
       try
       {
-        const {data: callBack} = await http.post('/groups/create', groupData);
+        const callBack = await Fetch('POST', '/groups/create', groupData);
         console.log(callBack);
         app.showFirebaseAlert('Group creation succeeded!');
         app.props.navigation.state.params.onNavigateBack();
@@ -122,7 +120,7 @@ export default class Groups extends Component {
     {
       try
       {
-        const {data: groups} = await http.get(`/groups/search?string=${string}`);
+        const groups = await Fetch('GET', `/groups/search?string=${string}`);
         app.setState({ foundGroups: groups});
       }
       catch (e)
@@ -137,7 +135,7 @@ export default class Groups extends Component {
     try
     {
       console.log('Trying to join');
-      const res = await http.post(`/groups/${groupId}/join`);
+      const res = await Fetch('POST', `/groups/${groupId}/join`);
       console.log(res);
       app.props.navigation.state.params.onNavigateBack();
       app.props.navigation.goBack();
