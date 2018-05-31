@@ -14,14 +14,17 @@ import {
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
-import Button from '../global/button';
 import { CheckBox } from 'react-native-elements';
-import Groups from '../groups/groups';
-import NextGame from './nextGame';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
+
+import Button from '../global/button';
+import Groups from '../groups/groups';
+import NextGame from './nextGame';
 import { Fetch } from '../../services/network';
+import { RandomNumberString } from '../../services/network';
+
 
 let app;
 
@@ -113,6 +116,11 @@ export default class Home extends Component {
         {
           app.props.navigation.setParams({otherParam: group.name});
 
+          // put together members by their status and present them in a table where you can click on users
+          // and see their status and ranking.
+          if (group.regulars && group.regulars.length > 0) {group.regulars = await app.getInformationForMembers(group.regulars)}
+          if (group.reserves && group.reserves.length > 0) {group.reserves = await app.getInformationForMembers(group.reserves)}
+
           // If group's next game is set and game date is in future update UI
           if (group.nextGame)
           {
@@ -120,20 +128,53 @@ export default class Home extends Component {
             const date = new Date(group.nextGame.gameDate);
             const gameDate = moment(date);
             const today = moment();
-            if (gameDate.diff(today) > 0)
+            if (gameDate.diff(today) > 0) // Game is not in the past so show its details vvvv
             {
               app.setState({ isSetNextGame: true });
               app._updateReceivedRsvp(group.nextGame);
+
+              // Add RSVP data to members
+              const rsvpYes = group.nextGame.rsvpYes || [];
+              const rsvpNo = group.nextGame.rsvpNo || [];
+              rsvpYes.forEach((yesUser) =>
+              {
+                if (group.regulars && group.regulars.length > 0)
+                {
+                  group.regulars.filter(val => val.userId == yesUser).map((user) =>
+                  {
+                    user.rsvp = 'Going';
+                    return user;
+                  });
+                } 
+                else if (group.reserves && group.reserves.length > 0)
+                {
+                  group.reserves.filter(val => val.userId == yesUser).map((user) => {
+                    user.rsvp = 'Going';
+                    return user;
+                  });
+                }
+              });
+              rsvpNo.forEach((noUser) =>
+              {
+                if (group.regulars && group.regulars.length > 0)
+                {
+                  group.regulars.filter(val => val.userId == noUser).map((user) =>
+                  {
+                    user.rsvp = 'Not Going';
+                    return user;
+                  });
+                } 
+                else if (group.reserves && group.reserves.length > 0)
+                {
+                  group.reserves.filter(val => val.userId == noUser).map((user) => {
+                    user.rsvp = 'Not Going';
+                    return user;
+                  });
+                }
+              });
             }
           }
-
-
-          // put together members by their status and present them in a table where you can click on users
-          // and see their status and ranking.
-
-          if (group && group.regulars && group.regulars.length > 0) {group.regulars = await app.getInformationForMembers(group.regulars)}
-          if (group && group.reserves && group.reserves.length > 0) {group.reserves = await app.getInformationForMembers(group.reserves)}
-          app.setState({group});
+          app.setState({group}); // Group exists update UI
         }
       }
     }
@@ -180,7 +221,8 @@ export default class Home extends Component {
     app.setState({ isUploadingData: true});
     try {
       const rsvp = await Fetch('POST', `/groups/${this.state.groupId}/rsvp`, {rsvp: status});
-      app._setRsvpTo(rsvp.status)
+      app._setRsvpTo(rsvp.status);
+      app.getGroupInformation();
     } catch (error) {
       console.error(error);
       // TODO: Show alert
@@ -226,9 +268,14 @@ export default class Home extends Component {
         (res, index) =>
         {
           members.push(
-            <TouchableOpacity style={styles.result} key={((index + 1)*76374).toString()}>
-              <View style={styles.item} key={((index + 2)*22374).toString()}>
-                <Text key={((index + 3)*26574).toString()} >{res.displayName}</Text>
+            <TouchableOpacity style={styles.result} key={RandomNumberString}>
+              <View style={styles.items} key={RandomNumberString}>
+                <View style={styles.leftItem}>
+                  <Text key={RandomNumberString} >{res.displayName}</Text>
+                </View>
+                <View style={styles.rightItem}>
+                  <Text style={res.rsvp === 'Going' ? {color: 'green'} : {color: 'red'}} key={RandomNumberString} >{res.rsvp}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           );
@@ -237,8 +284,8 @@ export default class Home extends Component {
     else
     {
       members.push(
-        <View key={(784579).toString()}>
-          <Text style={styles.item} key={(346537).toString()}>No members...</Text>
+        <View key={RandomNumberString}>
+          <Text style={styles.items} key={RandomNumberString}>No members...</Text>
         </View>
       );
     }
@@ -351,9 +398,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: 'rgba(247,247,247,1.0)',
   },
-  item: {
-    padding: 10,
+  items: {
     height: 44,
+    padding: 10,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  leftItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  rightItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   footer: {
     position: 'absolute',
