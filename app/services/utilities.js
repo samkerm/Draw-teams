@@ -1,4 +1,5 @@
-export function RandomNumberString() {
-    const randomNumber = Math.random() * 10000;
-    return randomNumber.toString();
+export let Random = {
+    get key() {
+        return (Math.random() * 10000).toString()
+    }
 };

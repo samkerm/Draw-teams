@@ -11,8 +11,7 @@ import {
   BackHandler,
   Alert,
   Image,
-  TouchableOpacity,
-  ActivityIndicator
+  TouchableOpacity
 } from 'react-native';
 import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
@@ -142,7 +141,8 @@ export default class Avatar extends Component {
         <TouchableOpacity 
           onPress={app._handleButtonPress}
           disabled={this.state.isUploadingImage}>
-          {app.state.avatarSource === '../../images/icons/avatar.png' ? 
+          {
+            app.state.avatarSource === '../../images/icons/avatar.png' ? 
             <Image style={styles.avatarImageIcon} source={require('../../images/icons/avatar.png')} /> :
             <Image style={styles.avatarImage} source={app.state.selectedAvatar} />
           }

@@ -10,6 +10,7 @@ import {
   SectionList,
   ListItem,
   AsyncStorage,
+  ActivityIndicator
 } from 'react-native';
 import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
@@ -23,21 +24,10 @@ import Button from '../global/button';
 import Groups from '../groups/groups';
 import NextGame from './nextGame';
 import { Fetch } from '../../services/network';
-import { RandomNumberString } from '../../services/network';
+import { Random } from '../../services/utilities';
 
 
 let app;
-
-// Temporarly putting this function here for dev
-// TODO: needs to be removed later
-function _logout() {
-  firebase.auth().signOut()
-    .then(function () {
-      app.props.navigation.navigate('Login');
-    }, function (error) {
-      app.showAlert('Sign Out Error', error.message);
-    });
-}
 
 export default class Home extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -47,7 +37,14 @@ export default class Home extends Component {
       headerLeft: null,
       headerRight: (
         <TouchableOpacity
-          onPress={() => { _logout() }}>
+          onPress={() => { app.props.navigation.navigate('Settings', 
+          { 
+            group: app.state.group,
+            userId: app.state.userId,
+            displayName: app.state.displayName,
+            groupId: app.state.groupId,
+            user: app.state.user,
+          });}}>
           <Image 
             style={styles.editProfileIcon}
             source={require('../../images/icons/profile-edit.png')}
@@ -65,9 +62,10 @@ export default class Home extends Component {
       userId: user.uid,
       group: {},
       displayName: '',
+      user: null,
       groupId: '',
       isSetNextGame: false,
-      isUploadingData: false,
+      isSyncingData: false,
       rsvpNA: true,
       rsvpNo: false,
       rsvpYes: false,
@@ -92,13 +90,23 @@ export default class Home extends Component {
 
   async getGroupInformation()
   {
+    app.setState({isSyncingData: true});
     try {
       const currentUserInfo = await Fetch('GET', `/getUserInfo?userId=${app.state.userId}`);
       const displayName = currentUserInfo.displayName || '';
       const groupId = currentUserInfo.groupId || '';
+
+      // Asyncronously get image data and store in user
+      // if (currentUserInfo.photoURL !== '')
+      // {
+      //   const imageDataResponse = await fetch(currentUserInfo.photoURL);
+      //   currentUserInfo.profileImagePath = await imageDataResponse.path();
+      // }
+
       app.setState({
         displayName,
-        groupId
+        groupId,
+        user: currentUserInfo
       })
       if (groupId === '')
       {
@@ -177,6 +185,7 @@ export default class Home extends Component {
           app.setState({group}); // Group exists update UI
         }
       }
+      app.setState({isSyncingData: false});// Neet to dismiss activity incidcator regadless of the outcome
     }
     catch (error)
     {
@@ -218,7 +227,7 @@ export default class Home extends Component {
 
   async _rsvp(status)
   {
-    app.setState({ isUploadingData: true});
+    app.setState({ isSyncingData: true});
     try {
       const rsvp = await Fetch('POST', `/groups/${this.state.groupId}/rsvp`, {rsvp: status});
       app._setRsvpTo(rsvp.status);
@@ -227,7 +236,7 @@ export default class Home extends Component {
       console.error(error);
       // TODO: Show alert
     }
-    app.setState({ isUploadingData: false});
+    app.setState({ isSyncingData: false});
   }
 
   _setRsvpTo(status) {
@@ -267,14 +276,22 @@ export default class Home extends Component {
       item.forEach(
         (res, index) =>
         {
+          const hasAvatar = res.photoURL !== '';
           members.push(
-            <TouchableOpacity style={styles.result} key={RandomNumberString}>
-              <View style={styles.items} key={RandomNumberString}>
-                <View style={styles.leftItem}>
-                  <Text key={RandomNumberString} >{res.displayName}</Text>
+            <TouchableOpacity style={styles.result} key={Random.key}>
+              <View style={styles.items} key={Random.key}>
+                <View key={Random.key}>
+                  {
+                    hasAvatar ?
+                    <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} key={Random.key} /> :
+                    <Image style={styles.profilePicture} source={{uri: params.user.photoURL}} key={Random.key}/>
+                  }
                 </View>
-                <View style={styles.rightItem}>
-                  <Text style={res.rsvp === 'Going' ? {color: 'green'} : {color: 'red'}} key={RandomNumberString} >{res.rsvp}</Text>
+                <View style={styles.leftItem} key={Random.key}>
+                  <Text key={Random.key} >{res.displayName}</Text>
+                </View>
+                <View style={styles.rightItem} key={Random.key}>
+                  <Text style={res.rsvp === 'Going' ? {color: 'green'} : {color: 'red'}} key={Random.key} >{res.rsvp}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -284,8 +301,8 @@ export default class Home extends Component {
     else
     {
       members.push(
-        <View key={RandomNumberString}>
-          <Text style={styles.items} key={RandomNumberString}>No members...</Text>
+        <View key={Random.key}>
+          <Text style={styles.items} key={Random.key}>No members...</Text>
         </View>
       );
     }
@@ -294,6 +311,18 @@ export default class Home extends Component {
         {members}
       </View>
     );
+  }
+
+  renderActivityIndicator()
+  {
+    if (app.state.isSyncingData) 
+    {
+      return(
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    }
   }
 
   renderFooter()
@@ -312,7 +341,7 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpNA)}
               onPress={() => app._rsvp('NA')}
-              disabled={this.state.isUploadingData}
+              disabled={this.state.isSyncingData}
             />
             <CheckBox
               center
@@ -322,7 +351,7 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpYes)}
               onPress={() => app._rsvp('YES')}
-              disabled={this.state.isUploadingData}
+              disabled={this.state.isSyncingData}
             />
             <CheckBox
               right
@@ -332,7 +361,7 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpNo)}
               onPress={() => app._rsvp('NO')}
-              disabled={this.state.isUploadingData}
+              disabled={this.state.isSyncingData}
             />
           </View>
           <View style={styles.button}>
@@ -374,6 +403,7 @@ export default class Home extends Component {
           ]}
           />
         { app.renderFooter() }
+        {app.renderActivityIndicator()}
       </View>
     );
   }
@@ -383,6 +413,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20
+  },
+  activityIndicator: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   editProfileIcon: {
     width: 20,
@@ -407,6 +446,7 @@ const styles = StyleSheet.create({
   },
   leftItem: {
     flex: 1,
+    paddingLeft: 20,
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
@@ -435,6 +475,12 @@ const styles = StyleSheet.create({
   checkboxView: {
     flexDirection: 'row',
   },
+  profilePicture: {
+    width: 20,
+    height: 20,
+    left: 10,
+    borderRadius: 10,
+  }
 });
 
 AppRegistry.registerComponent('Home', () => MyApp);

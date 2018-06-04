@@ -10,6 +10,7 @@ import Login from './app/components/login/login';
 import Profile from './app/components/profile/profile';
 import Avatar from './app/components/avatar/avatar';
 import Groups from './app/components/groups/groups';
+import Settings from './app/components/settings/settings';
 
 const App = StackNavigator({
   Login: { screen: Login },
@@ -18,6 +19,7 @@ const App = StackNavigator({
   Groups: { screen: Groups },
   Home: { screen: Home },
   NextGame: { screen: NextGame },
+  Settings: { screen: Settings },
 });
 
 export default class MyApp extends Component {
