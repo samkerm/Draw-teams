@@ -78,14 +78,7 @@ export default class Settings extends Component {
   componentWillMount()
   {
     app = this;
-    app._getUserRatings();
   }
-
-  _getUserRatings()
-  {
-
-  }
-
 
   render() {
     const {ratings} = app.state.user;
