@@ -22,6 +22,9 @@ const App = StackNavigator({
   Settings: { screen: Settings },
 });
 
+// Link to Clubhouse
+
+
 export default class MyApp extends Component {
   componentWillMount() {
   }
