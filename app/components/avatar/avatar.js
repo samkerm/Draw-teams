@@ -76,14 +76,17 @@ export default class Avatar extends Component {
   _handleButtonPress = () => {
     // More info on all the options is below in the README...just some common use cases shown here
     const options = {
-      title: 'Select Avatar',
-      // customButtons: [
-      //   { name: 'fb', title: 'Choose Photo from Facebook' },
-      // ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images'
-      }
+        title: 'Select Avatar',
+        // customButtons: [
+        //   { name: 'fb', title: 'Choose Photo from Facebook' },
+        // ],
+        maxWidth: '1000',
+        maxHeight: '1000',
+        quality: 0.1,
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        }
     };
 
     /**
