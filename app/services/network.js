@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native';
 import firebase from 'firebase';
 
 const baseURL = 'http://localhost:5000/draw-teams/us-central1/app';
+// const baseURL = 'https://us-central1-draw-teams.cloudfunctions.net/app';
 
 export async function RegisterWithToken() {
     try {
