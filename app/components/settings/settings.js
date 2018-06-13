@@ -17,6 +17,7 @@ import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 
 import Button from '../global/button';
+import Input from '../global/input';
 import RatingStars from '../global/ratingstars';
 import { Fetch } from '../../services/network';
 import { RandomNumberString } from '../../services/network';
@@ -72,18 +73,13 @@ export default class Settings extends Component {
     this.state = {
       userId: params.userId,
       user: params.user,
+      displayName: params.displayName,
     };
   }
 
   componentWillMount()
   {
     app = this;
-    app._getUserRatings();
-  }
-
-  _getUserRatings()
-  {
-
   }
 
 
@@ -116,6 +112,13 @@ export default class Settings extends Component {
                 label={ 'Goalie:' }
                 value={ ratings.goalie }
             />
+            <Input
+            ref='DisplayInput'
+            placeholder={ 'Enter your display name...' }
+            label={ 'Display Name' }
+            onChangeText={ name => this.setState({ displayName: name.trim() })}
+            value={ this.state.displayName }
+          />
         </View>
       </View>
     );
@@ -129,6 +132,8 @@ const styles = StyleSheet.create({
   },
   ratings: {
     flex: 1,
+    paddingTop: 20,
+    paddingBottom: 30, 
     backgroundColor: 'white',
   },
   logoutIcon: {
