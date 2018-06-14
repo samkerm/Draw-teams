@@ -14,7 +14,6 @@ import { StackNavigator, HeaderBackButton } from 'react-navigation';
 import Input from '../global/input';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';
-import axios from 'axios';
 import { Fetch } from '../../services/network';
 
 let app;
@@ -117,14 +116,13 @@ export default class Profile extends Component {
           ratings: app.state.ratings,
           displayName: app.state.displayName
         });
-        // if (createdUser.photoURL)
-        // {
-        //   app.props.navigation.navigate('Home');
-        // }
-        // else {
-        //   app.props.navigation.navigate('Avatar');
-        // }
-        app.props.navigation.navigate('Avatar');
+        if (createdUser.photoURL)
+        {
+          app.props.navigation.navigate('Home');
+        }
+        else {
+          app.props.navigation.navigate('Avatar');
+        }
       }
       catch (error)
       {

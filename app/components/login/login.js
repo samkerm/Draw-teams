@@ -1,20 +1,16 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-  Platform,
   StyleSheet,
   AppRegistry,
   Text,
   View,
   ActivityIndicator,
   Alert,
-  AsyncStorage
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
 import Input from '../global/input';
 import Button from '../global/button';
 import firebase from 'firebase';
-import axios from 'axios';
 import notifications from '../../services/push-notifications';
 import { RegisterWithToken } from '../../services/network';
 

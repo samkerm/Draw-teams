@@ -16,7 +16,7 @@ import firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
-import axios from 'axios';
+import RNFetchBlob from 'react-native-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -97,11 +97,11 @@ export default class Home extends Component {
       const groupId = currentUserInfo.groupId || '';
 
       // Asyncronously get image data and store in user
-      // if (currentUserInfo.photoURL !== '')
-      // {
-      //   const imageDataResponse = await fetch(currentUserInfo.photoURL);
-      //   currentUserInfo.profileImagePath = await imageDataResponse.path();
-      // }
+      if (currentUserInfo.photoURL !== '')
+      {
+        const res = await RNFetchBlob.fetch('GET', currentUserInfo.photoURL);
+        currentUserInfo.profileImageData = `data:image/jpeg;base64,${res.base64()}`;
+      }
 
       app.setState({
         displayName,
@@ -197,7 +197,15 @@ export default class Home extends Component {
   async getInformationForMembers(members)
   {
     const promises = members.map(id => Fetch('GET', `/getUserInfo?userId=${id}`));
-    return await Promise.all(promises);
+    const updatedMembers = await Promise.all(promises);
+    const photosPromises = updatedMembers.map(m => RNFetchBlob.fetch('GET', m.photoURL));
+    const photos = await Promise.all(photosPromises);
+    return updatedMembers.map((member) =>
+    {
+      const photo = photos.find(val => val.respInfo.redirects[0] === member.photoURL);
+      member.profileImageData = `data:image/jpeg;base64,${photo.base64()}`;
+      return member;
+    });
   }
 
   setUpNextGame()
@@ -283,8 +291,8 @@ export default class Home extends Component {
                 <View key={Random.key}>
                   {
                     hasAvatar ?
-                    <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} key={Random.key} /> :
-                    <Image style={styles.profilePicture} source={{uri: params.user.photoURL}} key={Random.key}/>
+                    <Image style={styles.profilePicture} source={{uri: res.profileImageData}} key={Random.key}/> :
+                    <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} key={Random.key} />
                   }
                 </View>
                 <View style={styles.leftItem} key={Random.key}>

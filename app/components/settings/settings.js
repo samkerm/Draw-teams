@@ -58,7 +58,7 @@ export default class Settings extends Component {
           {
             hasAvatar ?
             <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} /> :
-            <Image style={styles.profilePicture} source={{uri: params.user.photoURL}} />
+            <Image style={styles.profilePicture} source={{uri: params.user.profileImageData}} />
           }
         </TouchableOpacity>
       ),
