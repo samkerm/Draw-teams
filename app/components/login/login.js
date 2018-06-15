@@ -28,18 +28,19 @@ export default class Login extends Component {
       email: '',
       password: '',
       warning: '',
-      authenticating: false
+      authenticating: false,
     }
   }
 
   componentWillMount() {
     app = this;
-    const { navigate } = this.props.navigation;
+    const { navigate } = app.props.navigation;
     app.setState({ authenticating: true });
     firebase.auth().onAuthStateChanged(async (user) =>
     {
       if (user && app.state.authenticating)
       {
+        app.setState({ authenticating: false});
         await RegisterWithToken();
 
         if (user.displayName && user.photoURL)
@@ -55,8 +56,37 @@ export default class Login extends Component {
           navigate('Avatar');
         }
       }
+      app.setState({ authenticating: false});
+    });
+  }
+
+  onPressSignIn() {
+    app.setState({ authenticating: true });
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+      app.showAlert(error.code, error.message);
+      app.setState({ authenticating: false });
+      return;
+    });
+  }
+
+  onPressSignUp() {
+    app.setState({ authenticating: true });
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+      app.showAlert(error.code, error.message);
       app.setState({ authenticating: false });
     });
+  }
+
+  showAlert(title, message) {
+    Alert.alert(
+      title,
+      message,
+      [
+        {text: 'OK', style: 'cancel'},
+        {text: 'Create new account', onPress: () => app.onPressSignUp()},
+      ],
+      { cancelable: false }
+    )
   }
 
   focusPasswordInput() {
@@ -99,35 +129,6 @@ export default class Login extends Component {
         <Text>{ this.state.warning }</Text>
       </View>
     );
-  }
-
-  onPressSignIn() {
-    app.setState({ authenticating: true });
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
-      app.showAlert(error.code, error.message);
-      app.setState({ authenticating: false });
-      return;
-    });
-  }
-
-  onPressSignUp() {
-    app.setState({ authenticating: true });
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
-      app.showAlert(error.code, error.message);
-      app.setState({ authenticating: false });
-    });
-  }
-
-  showAlert(title, message) {
-    Alert.alert(
-      title,
-      message,
-      [
-        {text: 'OK', style: 'cancel'},
-        {text: 'Create new account', onPress: () => app.onPressSignUp()},
-      ],
-      { cancelable: false }
-    )
   }
 
   render() {

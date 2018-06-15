@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   },
   items: {
     height: 44,
-    padding: 10,
+    padding: 8,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -455,8 +455,8 @@ const styles = StyleSheet.create({
   leftItem: {
     flex: 1,
     paddingLeft: 20,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   rightItem: {
     flex: 1,
@@ -484,10 +484,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   profilePicture: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     left: 10,
-    borderRadius: 10,
+    borderRadius: 15,
   }
 });
 
