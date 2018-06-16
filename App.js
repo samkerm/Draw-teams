@@ -8,6 +8,7 @@ import Home from './app/components/home/home';
 import NextGame from './app/components/home/nextGame';
 import Login from './app/components/login/login';
 import Profile from './app/components/profile/profile';
+import MemberProfile from './app/components/profile/memberProfile';
 import Avatar from './app/components/avatar/avatar';
 import Groups from './app/components/groups/groups';
 import Settings from './app/components/settings/settings';
@@ -20,6 +21,7 @@ const App = StackNavigator({
   Home: { screen: Home },
   NextGame: { screen: NextGame },
   Settings: { screen: Settings },
+  MemberProfile: {screen: MemberProfile},
 });
 
 // Link to Clubhouse

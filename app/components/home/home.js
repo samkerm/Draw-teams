@@ -276,6 +276,17 @@ export default class Home extends Component {
     // app.setState({ rsvp });
   }
 
+  _openMemberProfile(member)
+  {
+    app.props.navigation.navigate('MemberProfile', {
+      userId: member.userId,
+      displayName: member.displayName,
+      groupId: member.groupId,
+      user: member,
+      group: app.state.group,
+    });
+  }
+
   renderSectionItem(item)
   {
     let members = [];
@@ -286,7 +297,8 @@ export default class Home extends Component {
         {
           const hasAvatar = res.photoURL !== '';
           members.push(
-            <TouchableOpacity style={styles.result} key={Random.key}>
+            <TouchableOpacity style={styles.result} key={Random.key}
+            onPress={() => { app._openMemberProfile(res)}}>
               <View style={styles.items} key={Random.key}>
                 <View key={Random.key}>
                   {
