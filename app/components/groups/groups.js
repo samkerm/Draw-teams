@@ -3,26 +3,33 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
+  TouchableOpacity,
   StyleSheet,
   Alert,
-  Spacer
+  Image,
+  AppRegistry,
 } from 'react-native';
-import { HeaderBackButton } from 'react-navigation';
 import Button from '../global/button';
 import CreateGroup from './create-group';
 import JoinGroup from './join-group';
 import firebase from 'firebase';
-import axios from 'axios';
 import { Fetch } from '../../services/network';
 
 let app;
 
 export default class Groups extends Component {
-  static navigationOptions = {
-    title: 'Join a group',
-    headerLeft: <HeaderBackButton onPress={() => { app.alet('You need a group', 'Its mandatory to be part of a group.') }} />,
+
+  static navigationOptions = () => {
+    return {
+      title: 'Join a group',
+    headerLeft: (
+      <TouchableOpacity
+        onPress={() => { app.alet('You need a group', 'Its mandatory to be part of a group.')}}>
+        <Image style={styles.backButtonIcon} source={require('../../images/icons/back-button.png')} /> 
+      </TouchableOpacity>
+    ),
     gesturesEnabled: false,
+    };
   };
 
   constructor() {
@@ -213,5 +220,12 @@ const styles = StyleSheet.create({
   button: {
     marginRight: 10,
     marginLeft: 10,
+  },
+  backButtonIcon: {
+    width: 25,
+    height: 25,
+    left: 10,
+    borderRadius: 12.5,
   }
 });
+AppRegistry.registerComponent('Groups', () => MyApp);

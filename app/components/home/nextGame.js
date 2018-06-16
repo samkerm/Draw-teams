@@ -11,7 +11,6 @@ import Button from '../global/button';
 import LabledSlider from '../global/slider';
 import DatePicker from 'react-native-datepicker';
 import { CheckBox } from 'react-native-elements';
-import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Fetch } from '../../services/network';

@@ -7,24 +7,31 @@ import {
   StyleSheet,
   AppRegistry,
   Alert,
-  BackHandler
+  BackHandler,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import firebase from 'firebase';
-import { StackNavigator, HeaderBackButton } from 'react-navigation';
 import Input from '../global/input';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';
-import axios from 'axios';
 import { Fetch } from '../../services/network';
 
 let app;
 
 export default class Profile extends Component {
 
-  static navigationOptions = {
-    title: 'Setup Your Profile',
-    headerLeft: <HeaderBackButton onPress={() => { app.logoutAlert('Logout', 'Are you sure you want to logout?') }} />,
-    gesturesEnabled: false,
+  static navigationOptions = () => {
+    return {
+      title: 'Setup Your Profile',
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => { app.logoutAlert('Logout', 'Are you sure you want to logout?') }}>
+          <Image style={styles.backButtonIcon} source={require('../../images/icons/back-button.png')} /> 
+        </TouchableOpacity>
+      ),
+      gesturesEnabled: false,
+    };
   };
 
   constructor(props) {
@@ -112,19 +119,17 @@ export default class Profile extends Component {
     if (this.state.displayName && this.state.displayName !== '')
     {
       try {
-        await Fetch('POST', '/users/updateDisplayName', {displayName: app.state.displayName});
-        await Fetch('POST', '/users/initializeUserWithRatings', {
+        const createdUser = await Fetch('POST', '/users/initializeUserWithRatings', {
           ratings: app.state.ratings,
           displayName: app.state.displayName
         });
-        // if (createdUser.photoURL)
-        // {
-        //   app.props.navigation.navigate('Home');
-        // }
-        // else {
-        //   app.props.navigation.navigate('Avatar');
-        // }
-        app.props.navigation.navigate('Avatar');
+        if (createdUser.photoURL)
+        {
+          app.props.navigation.navigate('Home');
+        }
+        else {
+          app.props.navigation.navigate('Avatar');
+        }
       }
       catch (error)
       {
@@ -224,6 +229,12 @@ const styles = StyleSheet.create({
     borderColor: '#AAA',
     borderWidth: 2,
     height: 30
+  },
+  backButtonIcon: {
+    width: 25,
+    height: 25,
+    left: 10,
+    borderRadius: 12.5,
   }
 });
 
