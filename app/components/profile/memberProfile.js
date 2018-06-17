@@ -28,7 +28,10 @@ export default class MemberProfile extends Component {
     return {
       headerLeft: (
         <TouchableOpacity
-          onPress={() => { navigation.goBack() }}>
+          onPress={() => {
+            params.getGroupInformation();
+            navigation.goBack();
+          }}>
           <Image style={styles.backButtonIcon} source={require('../../images/icons/back-button.png')} /> 
         </TouchableOpacity>
       ),
@@ -86,7 +89,7 @@ export default class MemberProfile extends Component {
   async _changeMemberStatusInGroup(status)
   {
     try {
-      const group = await Fetch('POST', `/groups/${app.state.user.groupId}/memberStatus?status=${status}`);
+      const {group} = await Fetch('POST', `/groups/${app.state.user.groupId}/memberStatus?status=${status}`);
       console.log(group);
       app._findOutUserStatus(group);
     } catch (error) {
@@ -101,56 +104,56 @@ export default class MemberProfile extends Component {
       <View style={styles.container}>
         <View style={styles.profileContainer}>
           {
-              hasAvatar ?
-              <Image style={styles.profilePicture} source={{uri: app.state.profileImageData}} /> : 
-              <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} />
-            }
+            hasAvatar ?
+            <Image style={styles.profilePicture} source={{uri: app.state.profileImageData}} /> : 
+            <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} />
+          }
         </View>
         
         <View style={styles.ratings}>
-            <RatingStars
-                label={ 'Defence:' }
-                value={ ratings.defence }
-            />
-            <RatingStars
-                label={ 'Attack:' }
-                value={ ratings.attack }
-            />
-            <RatingStars
-                label={ 'Speed:' }
-                value={ ratings.speed }
-            />
-            <RatingStars
-                label={ 'Pass:' }
-                value={ ratings.pass }
-            />
-            <RatingStars
-                label={ 'Dribble:' }
-                value={ ratings.dribble }
-            />
-            <RatingStars
-                label={ 'Goalie:' }
-                value={ ratings.goalie }
-            />
+          <RatingStars
+              label={ 'Defence:' }
+              value={ ratings.defence }
+          />
+          <RatingStars
+              label={ 'Attack:' }
+              value={ ratings.attack }
+          />
+          <RatingStars
+              label={ 'Speed:' }
+              value={ ratings.speed }
+          />
+          <RatingStars
+              label={ 'Pass:' }
+              value={ ratings.pass }
+          />
+          <RatingStars
+              label={ 'Dribble:' }
+              value={ ratings.dribble }
+          />
+          <RatingStars
+              label={ 'Goalie:' }
+              value={ ratings.goalie }
+          />
         </View>
         <View style={styles.checkboxView}>
-            <CheckBox
-              title='Regular'
-              iconRight
-              checkedIcon='dot-circle-o'
-              uncheckedIcon='circle-o'
-              checked={app.state.isRegular}
-              onPress={() => app._changeMemberStatusInGroup('regular')}
-            />
-            <CheckBox
-              title='Reserve'
-              iconRight
-              checkedIcon='dot-circle-o'
-              uncheckedIcon='circle-o'
-              checked={app.state.isReserve}
-              onPress={() => app._changeMemberStatusInGroup('reserve')}
-            />
-          </View>
+          <CheckBox
+            title='Regular'
+            iconRight
+            checkedIcon='dot-circle-o'
+            uncheckedIcon='circle-o'
+            checked={app.state.isRegular}
+            onPress={() => app._changeMemberStatusInGroup('regular')}
+          />
+          <CheckBox
+            title='Reserve'
+            iconRight
+            checkedIcon='dot-circle-o'
+            uncheckedIcon='circle-o'
+            checked={app.state.isReserve}
+            onPress={() => app._changeMemberStatusInGroup('reserve')}
+          />
+        </View>
       </View>
     );
   }
