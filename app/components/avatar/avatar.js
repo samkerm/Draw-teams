@@ -171,7 +171,7 @@ export default class Avatar extends Component {
       <View style={styles.container}>
         <TouchableOpacity 
           onPress={app._handleButtonPress}
-          disabled={this.state.isUploadingImage}>
+          disabled={app.state.isUploadingImage}>
           {
             app.state.avatarSource === '../../images/icons/avatar.png' ? 
             <Image style={styles.avatarImageIcon} source={require('../../images/icons/avatar.png')} /> :
