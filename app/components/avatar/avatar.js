@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
+  Platform,
   StyleSheet,
   AppRegistry,
   BackHandler,
@@ -16,7 +16,7 @@ import {
 import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
 import firebase from 'firebase';
-import axios from 'axios';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const ImagePicker = require('react-native-image-picker');
 const storage = firebase.storage();
@@ -76,14 +76,17 @@ export default class Avatar extends Component {
   _handleButtonPress = () => {
     // More info on all the options is below in the README...just some common use cases shown here
     const options = {
-      title: 'Select Avatar',
-      // customButtons: [
-      //   { name: 'fb', title: 'Choose Photo from Facebook' },
-      // ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images'
-      }
+        title: 'Select Avatar',
+        // customButtons: [
+        //   { name: 'fb', title: 'Choose Photo from Facebook' },
+        // ],
+        maxWidth: '1000',
+        maxHeight: '1000',
+        quality: 0.1,
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        }
     };
 
     /**
@@ -118,21 +121,49 @@ export default class Avatar extends Component {
   };
 
   async _setAvatar() {
+    // Prepare Blob support
+    const {Blob} = RNFetchBlob.polyfill;
+    const {fs} = RNFetchBlob;
+
+    window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+    window.Blob = Blob;
+    
+    app.setState({ isUploadingImage: true});
+
     const user = firebase.auth().currentUser;
     const storageRef = storage.ref().child('avatars').child(user.uid);
-    app.setState({ isUploadingImage: true})
-    try {
-      // Data URL string
-      const snapshot = await storageRef.putString(app.state.selectedAvatar.uri, 'data_url');
-      const url = await snapshot.ref.getDownloadURL();
-      await user.updateProfile({
-        photoURL: url
-      });
+    const {uri} = app.state.avatarSource;
+    const mime = 'application/octet-stream';
+
+    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+    let uploadBlob = null;
+
+    fs.readFile(uploadUri, 'base64')
+      .then((data) => {
+        return Blob.build(data, {
+          type: `${mime};BASE64`
+        });
+      })
+      .then((blob) => {
+        uploadBlob = blob;
+        return storageRef.put(blob, {
+          contentType: mime
+        });
+      })
+      .then(() => {
+        uploadBlob.close();
+        return storageRef.getDownloadURL();
+      })
+      .then((url) => {
+        return user.updateProfile({
+          photoURL: url
+        });
+      })
+      .catch((error) => {
+        app.setState({ isUploadingImage: false });
+        console.error(error);
+      })
       app.props.navigation.navigate('Home');
-    } catch (error) {
-      app.setState({ isUploadingImage: false })
-      console.error(error);
-    }
   }
 
   render() {

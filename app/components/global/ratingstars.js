@@ -26,7 +26,7 @@ export default class RatingStars extends Component {
             fractions={1}
             startingValue={this.state.value || this.props.value}
             readonly
-            ratingBackgroundColor=""
+            ratingBackgroundColor="transparent"
             style={{backgroundColor: 'white'}}
             showReadOnlyText={false}
             ratingCount={10}

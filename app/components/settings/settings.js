@@ -17,6 +17,7 @@ import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 
 import Button from '../global/button';
+import Input from '../global/input';
 import RatingStars from '../global/ratingstars';
 import { Fetch } from '../../services/network';
 import { RandomNumberString } from '../../services/network';
@@ -38,10 +39,20 @@ function _logout() {
 export default class Settings extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    const hasAvatar = params && params.user && params.user.photoURL === '';
+    
     return {
-      title: params.displayName,
-      headerLeft: null,
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => { navigation.goBack() }}>
+          <Image style={styles.backButtonIcon} source={require('../../images/icons/back-button.png')} /> 
+        </TouchableOpacity>
+      ),
+      headerTitle: (
+        <TouchableOpacity
+          onPress={() => { }}>
+          <Text>{params.displayName}</Text>
+        </TouchableOpacity>
+      ),
       headerRight: (
         <TouchableOpacity
           onPress={() => { _logout() }}>
@@ -49,16 +60,6 @@ export default class Settings extends Component {
             style={styles.logoutIcon}
             source={require('../../images/icons/logout.png')}
           />
-        </TouchableOpacity>
-      ),
-      headerLeft: (
-        <TouchableOpacity
-          onPress={() => {  }}>
-          {
-            hasAvatar ?
-            <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} /> :
-            <Image style={styles.profilePicture} source={{uri: params.user.photoURL}} />
-          }
         </TouchableOpacity>
       ),
       gesturesEnabled: false,
@@ -72,6 +73,8 @@ export default class Settings extends Component {
     this.state = {
       userId: params.userId,
       user: params.user,
+      displayName: params.displayName,
+      profileImageData: params.user.profileImageData
     };
   }
 
@@ -82,8 +85,20 @@ export default class Settings extends Component {
 
   render() {
     const {ratings} = app.state.user;
+    const hasAvatar = app.state.profileImageData !== '';
     return (
       <View style={styles.container}>
+        <View style={styles.profileContainer}>
+          <TouchableOpacity
+            onPress={() => {  }}>
+            {
+              hasAvatar ?
+              <Image style={styles.profilePicture} source={{uri: app.state.profileImageData}} /> : 
+              <Image style={styles.profilePicture} source={require('../../images/icons/avatar.png')} />
+            }
+          </TouchableOpacity>
+        </View>
+        
         <View style={styles.ratings}>
             <RatingStars
                 label={ 'Defence:' }
@@ -118,10 +133,11 @@ export default class Settings extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: 20
   },
   ratings: {
     flex: 1,
+    paddingTop: 20,
+    paddingBottom: 30, 
     backgroundColor: 'white',
   },
   logoutIcon: {
@@ -130,10 +146,22 @@ const styles = StyleSheet.create({
     right: 10,
   },
   profilePicture: {
-    width: 40,
-    height: 40,
+    width: 100,
+    height: 100,
     left: 10,
-    borderRadius: 20,
+    borderRadius: 50,
+  },
+  profileContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButtonIcon: {
+    width: 25,
+    height: 25,
+    left: 10,
+    borderRadius: 12.5,
   }
 });
 
