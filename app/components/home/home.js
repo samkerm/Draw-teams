@@ -44,6 +44,7 @@ export default class Home extends Component {
             displayName: app.state.displayName,
             groupId: app.state.groupId,
             user: app.state.user,
+            getGroupInformation: app._getGroupInformation
           });}}>
           <Image 
             style={styles.editProfileIcon}
@@ -75,7 +76,7 @@ export default class Home extends Component {
   componentWillMount()
   {
     app = this;
-    app.getGroupInformation();
+    app._getGroupInformation();
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
     });
@@ -88,7 +89,7 @@ export default class Home extends Component {
     });
   }
 
-  async getGroupInformation()
+  async _getGroupInformation()
   {
     app.setState({isSyncingData: true});
     try {
@@ -112,7 +113,7 @@ export default class Home extends Component {
       {
         app.props.navigation.setParams({otherParam: 'need to join a group'})
         app.props.navigation.navigate('Groups', {
-          onNavigateBack: app.getGroupInformation,
+          onNavigateBack: app._getGroupInformation,
           currentUserInfo,
         });
       }
@@ -126,8 +127,8 @@ export default class Home extends Component {
 
           // put together members by their status and present them in a table where you can click on users
           // and see their status and ranking.
-          if (group.regulars && group.regulars.length > 0) {group.regulars = await app.getInformationForMembers(group.regulars)}
-          if (group.reserves && group.reserves.length > 0) {group.reserves = await app.getInformationForMembers(group.reserves)}
+          if (group.regulars && group.regulars.length > 0) {group.regulars = await app._getInformationForMembers(group.regulars)}
+          if (group.reserves && group.reserves.length > 0) {group.reserves = await app._getInformationForMembers(group.reserves)}
 
           // If group's next game is set and game date is in future update UI
           if (group.nextGame)
@@ -194,7 +195,7 @@ export default class Home extends Component {
     }
   }
 
-  async getInformationForMembers(members)
+  async _getInformationForMembers(members)
   {
     const promises = members.map(id => Fetch('GET', `/getUserInfo?userId=${id}`));
     const updatedMembers = await Promise.all(promises);
@@ -208,21 +209,21 @@ export default class Home extends Component {
     });
   }
 
-  setUpNextGame()
+  _setUpNextGame()
   {
     const group = app.state.group;
     const groupId = app.state.groupId;
     app.props.navigation.navigate('NextGame', {
       group,
       groupId,
-      nextGameIsSet: app.justSetNextGame
+      nextGameIsSet: app._justSetNextGame
     });
   }
 
-  justSetNextGame()
+  _justSetNextGame()
   {
     app.setState({ isSetNextGame: true });
-    app.getGroupInformation();
+    app._getGroupInformation();
   }
 
   _updateReceivedRsvp(nextGame)
@@ -239,7 +240,7 @@ export default class Home extends Component {
     try {
       const rsvp = await Fetch('POST', `/groups/${this.state.groupId}/rsvp`, {rsvp: status});
       app._setRsvpTo(rsvp.status);
-      app.getGroupInformation();
+      app._getGroupInformation();
     } catch (error) {
       console.error(error);
       // TODO: Show alert
@@ -273,10 +274,21 @@ export default class Home extends Component {
       default:
         break;
     }
-    // app.setState({ rsvp });
   }
 
-  renderSectionItem(item)
+  _openMemberProfile(member)
+  {
+    app.props.navigation.navigate('MemberProfile', {
+      userId: member.userId,
+      displayName: member.displayName,
+      groupId: member.groupId,
+      user: member,
+      group: app.state.group,
+      getGroupInformation: app._getGroupInformation
+    });
+  }
+
+  _renderSectionItem(item)
   {
     let members = [];
     if (item && item.length > 0)
@@ -286,7 +298,8 @@ export default class Home extends Component {
         {
           const hasAvatar = res.photoURL !== '';
           members.push(
-            <TouchableOpacity style={styles.result} key={Random.key}>
+            <TouchableOpacity style={styles.result} key={Random.key}
+            onPress={() => { app._openMemberProfile(res)}}>
               <View style={styles.items} key={Random.key}>
                 <View key={Random.key}>
                   {
@@ -321,7 +334,7 @@ export default class Home extends Component {
     );
   }
 
-  renderActivityIndicator()
+  _renderActivityIndicator()
   {
     if (app.state.isSyncingData) 
     {
@@ -349,7 +362,7 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpNA)}
               onPress={() => app._rsvp('NA')}
-              disabled={this.state.isSyncingData}
+              disabled={app.state.isSyncingData}
             />
             <CheckBox
               center
@@ -359,7 +372,7 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpYes)}
               onPress={() => app._rsvp('YES')}
-              disabled={this.state.isSyncingData}
+              disabled={app.state.isSyncingData}
             />
             <CheckBox
               right
@@ -369,14 +382,14 @@ export default class Home extends Component {
               uncheckedIcon='circle-o'
               checked={(app.state.rsvpNo)}
               onPress={() => app._rsvp('NO')}
-              disabled={this.state.isSyncingData}
+              disabled={app.state.isSyncingData}
             />
           </View>
           <View style={styles.button}>
             <Button
               background={styles.whiteBG}
               textColor={styles.textColor}
-              onPress={this.setUpNextGame}>
+              onPress={app._setUpNextGame}>
               Update Next Game
             </Button>
           </View>
@@ -389,7 +402,7 @@ export default class Home extends Component {
           <Button
             background={styles.whiteBG}
             textColor={styles.textColor}
-            onPress={this.setUpNextGame}>
+            onPress={app._setUpNextGame}>
             Set Next Game
           </Button>
         </View>
@@ -400,9 +413,12 @@ export default class Home extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container}
+        pointerEvents = {
+          app.state.isSyncingData ? 'none' : 'auto'
+        } >
         <SectionList
-          renderItem={({item}) => this.renderSectionItem(item)}
+          renderItem={({item}) => this._renderSectionItem(item)}
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
           sections={[ // homogeneous rendering between sections
@@ -411,7 +427,7 @@ export default class Home extends Component {
           ]}
           />
         { app.renderFooter() }
-        {app.renderActivityIndicator()}
+        {app._renderActivityIndicator()}
       </View>
     );
   }
