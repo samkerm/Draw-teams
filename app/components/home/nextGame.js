@@ -14,6 +14,7 @@ import { CheckBox } from 'react-native-elements';
 import _ from 'lodash';
 import moment from 'moment';
 import { Fetch } from '../../services/network';
+import qrcode from '../qr/qr';
 
 let app;
 
@@ -75,6 +76,7 @@ export default class NextGame extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={ styles.container }>
         <LabledSlider
@@ -189,6 +191,13 @@ export default class NextGame extends Component {
               onPress={() => this._monthlyRepeat()}
             />
           </View>
+          <Button
+            title="Hello"
+            onPress={() =>
+              navigate('Qr')
+            }
+            />
+
         </View>
         <View style={ styles.footer }>
           <View style={ styles.button }>

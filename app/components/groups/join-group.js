@@ -16,6 +16,7 @@ export default class JoinGroup extends Component {
   }
 
   render() {
+
     let groups = [];
     if (this.props.results.length > 0)
     {
@@ -51,6 +52,10 @@ export default class JoinGroup extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.container}>
+        <Button
+          title="Hello"
+          onPress={() => this.props.navigation.navigate('Qr')}
+          />
           <Input
             placeholder={ 'Search a group name...' }
             label={ 'Group Names' }
