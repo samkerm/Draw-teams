@@ -12,7 +12,6 @@ import Input from '../global/input';
 import Button from '../global/button';
 import firebase from 'react-native-firebase';
 import { Fetch } from '../../services/network';
-import notifications from '../../services/push-notifications';
 import { RegisterWithToken } from '../../services/network';
 
 let app;
@@ -80,7 +79,7 @@ export default class Login extends Component {
 
   onPressSignIn() {
     app.setState({ authenticating: true });
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+    firebase.auth().signInAndRetriveDataWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       app.showAlert(error.code, error.message);
       app.setState({ authenticating: false });
       return;

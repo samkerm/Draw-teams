@@ -222,10 +222,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  button: {
-    marginRight: 10,
-    marginLeft: 10,
-  },
   whiteBG: {
     backgroundColor: '#FFF',
   },
