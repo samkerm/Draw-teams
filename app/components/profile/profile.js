@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
 import Input from '../global/input';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';

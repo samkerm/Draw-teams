@@ -1,4 +1,4 @@
-package com.myapp;
+package com.samkheirandish.drawteams.MyApp;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,8 +1,12 @@
-package com.myapp;
+package com.samkheirandish.drawteams.MyApp;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -28,10 +32,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFetchBlobPackage(),
-            new ImagePickerPackage(),
-            new VectorIconsPackage(),
-          new ReactNativePushNotificationPackage()
+          new RNFirebasePackage(),
+          new RNFetchBlobPackage(),
+          new ImagePickerPackage(),
+          new VectorIconsPackage(),
+          new ReactNativePushNotificationPackage(),
+          new RNFirebaseStoragePackage(),
+          new RNFirebaseAuthPackage(),
+          new RNFirebaseMessagingPackage()
       );
     }
 
