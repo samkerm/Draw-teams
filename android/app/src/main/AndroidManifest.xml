@@ -1,10 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.myapp"
+    package="com.samkheirandish.drawteams.MyApp"
     android:versionCode="1"
     android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -17,7 +16,6 @@
 
     <!-- for react-native-image-picker -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -37,8 +35,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-     <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
-     <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
@@ -64,6 +61,16 @@
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
+            <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="io.invertase.firebase.messaging.RNFirebaseInstanceIdService">
+            <intent-filter>
+            <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
     </application>
