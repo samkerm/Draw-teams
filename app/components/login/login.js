@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import Input from '../global/input';
 import Button from '../global/button';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
+import { Fetch } from '../../services/network';
 import notifications from '../../services/push-notifications';
 import { RegisterWithToken } from '../../services/network';
 
@@ -42,6 +43,19 @@ export default class Login extends Component {
       {
         app.setState({ authenticating: false});
         await RegisterWithToken();
+        this.onTokenRefreshListener = firebase.messaging().onTokenRefresh( async fcmToken => {
+          console.log('Received fcmToken from device: ', fcmToken);
+          try {
+            const response = await Fetch('POST', `/users/receivedNewDeviceToken`, fcmToken);
+            console.log(response);
+            if (response) {
+              console.log('Successfully uploaded the token to firebase storage');
+            }
+          } catch (e) {
+            console.log('Error');
+            console.log(e)
+          }
+        });
 
         if (user.displayName && user.photoURL)
         {
@@ -59,6 +73,10 @@ export default class Login extends Component {
       app.setState({ authenticating: false});
     });
   }
+
+  // componentWillUnmount() {
+  //   this.onTokenRefreshListener();
+  // }
 
   onPressSignIn() {
     app.setState({ authenticating: true });

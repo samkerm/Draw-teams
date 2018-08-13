@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Button from '../global/button';
 import { HeaderBackButton } from 'react-navigation';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 
 const ImagePicker = require('react-native-image-picker');
