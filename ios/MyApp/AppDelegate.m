@@ -21,9 +21,7 @@
 {
   [FIRApp configure];
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
-  
-  [FIROptions defaultOptions].deepLinkURLScheme = @"applinks:https://drawteams.page.link.app.goo.gl";
-  
+    
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
