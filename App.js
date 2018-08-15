@@ -3,7 +3,6 @@ import {
   AppRegistry,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import firebase from './app/services/firebase';
 import Home from './app/components/home/home';
 import NextGame from './app/components/home/nextGame';
 import Login from './app/components/login/login';

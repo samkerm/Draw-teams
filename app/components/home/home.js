@@ -12,7 +12,7 @@ import {
   AsyncStorage,
   ActivityIndicator
 } from 'react-native';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
 import { NavigationActions } from 'react-navigation';
 import { StackNavigator } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
@@ -191,7 +191,7 @@ export default class Home extends Component {
     catch (error)
     {
       console.error(error);
-      _logout();
+      // _logout();
     }
   }
 

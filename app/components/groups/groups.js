@@ -12,7 +12,7 @@ import {
 import Button from '../global/button';
 import CreateGroup from './create-group';
 import JoinGroup from './join-group';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
 import { Fetch } from '../../services/network';
 
 let app;

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   AppRegistry,
 } from 'react-native';
-import firebase from 'firebase';
+import firebase from 'react-native-firebase';
 import { HeaderBackButton } from 'react-navigation';
 import Button from '../global/button';
 import LabledSlider from '../global/slider';
