@@ -23,7 +23,7 @@ export default class Login extends Component {
 
   constructor() {
     super();
-
+    this.unsubscriber = null;
     this.state = {
       email: '',
       password: '',
@@ -36,7 +36,7 @@ export default class Login extends Component {
     app = this;
     const { navigate } = app.props.navigation;
     app.setState({ authenticating: true });
-    firebase.auth().onAuthStateChanged(async (user) =>
+    this.unsubscriber = firebase.auth().onAuthStateChanged(async (user) =>
     {
       if (user && app.state.authenticating)
       {
@@ -73,13 +73,15 @@ export default class Login extends Component {
     });
   }
 
-  // componentWillUnmount() {
-  //   this.onTokenRefreshListener();
-  // }
+  componentWillUnmount() {
+    if (this.unsubscriber) {
+      this.unsubscriber();
+    }
+  }
 
   onPressSignIn() {
     app.setState({ authenticating: true });
-    firebase.auth().signInAndRetriveDataWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
       app.showAlert(error.code, error.message);
       app.setState({ authenticating: false });
       return;
@@ -88,7 +90,7 @@ export default class Login extends Component {
 
   onPressSignUp() {
     app.setState({ authenticating: true });
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
       app.showAlert(error.code, error.message);
       app.setState({ authenticating: false });
     });
