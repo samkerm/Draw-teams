@@ -40,7 +40,7 @@
 		4DAC63D0447647E2A9582FC6 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B02F96EA9E6347ADA87931C9 /* Foundation.ttf */; };
 		538613282019A2680077A260 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 538613122019A22A0077A260 /* libRCTCameraRoll.a */; };
 		53B1732D20871CE1005B3647 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B9EAF92071B68B007966C3 /* libRCTPushNotification.a */; };
-		53F550CB211A5D7C003FA602 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */; };
+		53CC804D2133694E006DB1EB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53CC80202133694E006DB1EB /* GoogleService-Info.plist */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		65CFFD39AEEA4790A654B5DD /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1EFB86712044A819F8655DA /* FontAwesome.ttf */; };
 		6C808578B9D7406E8591AAE2 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 239D70E567B648778C4F93C6 /* libRNImagePicker.a */; };
@@ -411,7 +411,7 @@
 		538613062019A22A0077A260 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		53B9EAF22071B587007966C3 /* MyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MyApp.entitlements; path = MyApp/MyApp.entitlements; sourceTree = "<group>"; };
 		53B9EAF32071B68B007966C3 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
-		53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../samkheirandish/Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		53CC80202133694E006DB1EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		57FE6A3FAD964F1BB6348B85 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		764F8A6E75EE4088861AC433 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
@@ -586,7 +586,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */,
+				53CC80202133694E006DB1EB /* GoogleService-Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -1335,6 +1335,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				53CC804D2133694E006DB1EB /* GoogleService-Info.plist in Resources */,
 				42C40A3C11014F50B2B643D4 /* Entypo.ttf in Resources */,
 				DC78480FFAE64DBAB97B5099 /* EvilIcons.ttf in Resources */,
 				8C968D286B884914A2C46D40 /* Feather.ttf in Resources */,
@@ -1346,7 +1347,6 @@
 				7FDA8330B6DA409EB1836FCE /* Octicons.ttf in Resources */,
 				C7A94A24207E4F9683817E39 /* SimpleLineIcons.ttf in Resources */,
 				8A5A6A69997D4CCDA86BA5DA /* Zocial.ttf in Resources */,
-				53F550CB211A5D7C003FA602 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

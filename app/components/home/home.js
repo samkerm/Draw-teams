@@ -8,21 +8,16 @@ import {
   Image,
   BackHandler,
   SectionList,
-  ListItem,
-  AsyncStorage,
-  ActivityIndicator
+  AppState,
+  ActivityIndicator,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { NavigationActions } from 'react-navigation';
-import { StackNavigator } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
 
 import Button from '../global/button';
-import Groups from '../groups/groups';
-import NextGame from './nextGame';
 import { Fetch } from '../../services/network';
 import { Random } from '../../services/utilities';
 
@@ -60,6 +55,7 @@ export default class Home extends Component {
     super();
     const user = firebase.auth().currentUser;
     this.state = {
+      appState: AppState.currentState,
       userId: user.uid,
       group: {},
       displayName: '',
@@ -76,16 +72,28 @@ export default class Home extends Component {
   componentWillMount()
   {
     app = this;
-    app._getGroupInformation();
+    AppState.addEventListener('change', this._handleAppStateChange);
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
     });
+    app._getGroupInformation();
   }
 
   componentWillUnmount()
   {
+    AppState.removeEventListener('change', this._handleAppStateChange);
     BackHandler.removeEventListener('hardwareBackPress', function() {
       return false;
+    });
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      app._getGroupInformation();
+      // TODO: set badge count to 0
+    }
+    this.setState({
+      appState: nextAppState
     });
   }
 
@@ -134,10 +142,9 @@ export default class Home extends Component {
           if (group.nextGame)
           {
             group.nextGame = group.nextGame;
-            const date = new Date(group.nextGame.gameDate);
-            const gameDate = moment(date);
+            const gameDate = moment(group.nextGame.gameDate, 'dddd, YYYY-MMM-DD kk:mm');
             const today = moment();
-            if (gameDate.diff(today) > 0) // Game is not in the past so show its details vvvv
+            if (gameDate.diff(today) >= 0) // Game is not in the past so show its details vvvv
             {
               app.setState({ isSetNextGame: true });
               app._updateReceivedRsvp(group.nextGame);
@@ -181,6 +188,10 @@ export default class Home extends Component {
                   });
                 }
               });
+            }
+            else
+            {
+              app.setState({ isSetNextGame: false });
             }
           }
           app.setState({group}); // Group exists update UI
