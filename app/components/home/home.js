@@ -101,6 +101,26 @@ export default class Home extends Component {
     });
   }
 
+  async _getRegularsAndReserves(group)
+  {
+    // put together members by their status and present them in a table where you can click on users
+    // and see their status and ranking.
+    let tableTopSection = [];
+    let tableBottomSection = [];
+    if (group.regulars && group.regulars.length > 0) {
+      tableTopSection = await app._getInformationForMembers(group.regulars)
+    }
+    if (group.reserves && group.reserves.length > 0) {
+      tableBottomSection = await app._getInformationForMembers(group.reserves)
+    }
+    app.setState({
+      topSectionHeader: 'Regulars',
+      bottomSectionHeader: 'Reserves',
+      tableTopSection,
+      tableBottomSection
+    });
+  }
+
   async _getGroupInformation()
   {
     app.setState({isSyncingData: true});
@@ -153,19 +173,7 @@ export default class Home extends Component {
             }
             else
             {
-              // put together members by their status and present them in a table where you can click on users
-              // and see their status and ranking.
-              let tableTopSection = [];
-              let tableBottomSection = [];
-              if (group.regulars && group.regulars.length > 0) {tableTopSection = await app._getInformationForMembers(group.regulars)}
-              if (group.reserves && group.reserves.length > 0) {tableBottomSection = await app._getInformationForMembers(group.reserves)}
-              app.setState({
-                topSectionHeader: 'Regulars',
-                bottomSectionHeader: 'Reserves',
-                tableTopSection,
-                tableBottomSection
-              });
-
+              app._getRegularsAndReserves();
             }
             const gameDate = moment(group.nextGame.gameDate, 'dddd, YYYY-MMM-DD kk:mm');
             const today = moment();
@@ -218,6 +226,10 @@ export default class Home extends Component {
             {
               app.setState({ isSetNextGame: false });
             }
+          }
+          else
+          {
+            app._getRegularsAndReserves(group);
           }
           app.setState({group}); // Group exists update UI
         }
