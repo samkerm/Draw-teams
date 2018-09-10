@@ -22,14 +22,14 @@ let app;
 
 // Temporarly putting this function here for dev
 // TODO: needs to be removed later. Can be passed in with navigation
-// function _logout() {
-//   firebase.auth().signOut()
-//     .then(function () {
-//       app.props.navigation.navigate('Login');
-//     }, function (error) {
-//       app.showAlert('Sign Out Error', error.message);
-//     });
-// }
+function _logout() {
+  firebase.auth().signOut()
+    .then(function () {
+      app.props.navigation.navigate('Login');
+    }, function (error) {
+      app.showAlert('Sign Out Error', error.message);
+    });
+}
 
 export default class Settings extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -53,7 +53,7 @@ export default class Settings extends Component {
       ),
       headerRight: (
         <TouchableOpacity
-          // onPress={() => { _logout() }}
+          onPress={() => { _logout() }}
           >
           <Image 
             style={styles.logoutIcon}

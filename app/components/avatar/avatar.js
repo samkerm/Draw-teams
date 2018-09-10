@@ -146,7 +146,7 @@ export default class Avatar extends Component {
       })
       .then((blob) => {
         uploadBlob = blob;
-        return storageRef.put(blob, {
+        return storageRef.put(blob._ref, {
           contentType: mime
         });
       })
