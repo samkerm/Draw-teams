@@ -3,6 +3,8 @@ package com.samkheirandish.drawteams.MyApp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+<<<<<<< HEAD
+=======
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
@@ -10,6 +12,7 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+>>>>>>> dev
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -17,8 +20,6 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -31,6 +32,9 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
+<<<<<<< HEAD
+          new MainReactPackage()
+=======
           new MainReactPackage(),
           new RNFirebasePackage(),
           new RNFetchBlobPackage(),
@@ -40,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseStoragePackage(),
           new RNFirebaseAuthPackage(),
           new RNFirebaseMessagingPackage()
+>>>>>>> dev
       );
     }
 

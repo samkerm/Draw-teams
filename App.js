@@ -11,6 +11,9 @@ import MemberProfile from './app/components/profile/memberProfile';
 import Avatar from './app/components/avatar/avatar';
 import Groups from './app/components/groups/groups';
 import Settings from './app/components/settings/settings';
+import Qr from './app/components/qr/qr';
+import QrGenerator from './app/components/qr/qrGenerator';
+import JoinGroup from './app/components/groups/groups';
 
 const App = StackNavigator({
   Login: { screen: Login },
@@ -21,10 +24,12 @@ const App = StackNavigator({
   NextGame: { screen: NextGame },
   Settings: { screen: Settings },
   MemberProfile: {screen: MemberProfile},
+  Qr: {screen: Qr},
+  QrGenerator: {screen: QrGenerator},
+  JoinGroup: {screen: JoinGroup}
 });
 
 // Link to Clubhouse
-
 
 export default class MyApp extends Component {
   componentWillMount() {

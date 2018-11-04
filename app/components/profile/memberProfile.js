@@ -48,6 +48,7 @@ export default class MemberProfile extends Component {
   constructor(props) {
     super(props);
     const {params} = props.navigation.state;
+    console.log('Parameter ', params.groupId);
 
     this.state = {
       userId: params.userId,
@@ -55,6 +56,7 @@ export default class MemberProfile extends Component {
       displayName: params.displayName,
       profileImageData: params.user.profileImageData,
       group: params.group,
+      groupId: params.groupId,
       isRegular: false,
       isReserve: false
     };
@@ -100,6 +102,8 @@ export default class MemberProfile extends Component {
   render() {
     const {ratings} = app.state.user;
     const hasAvatar = app.state.profileImageData !== '';
+    const { navigate } = this.props.navigation;
+    console.log('This is rendering ', this.state.groupId);
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -135,6 +139,16 @@ export default class MemberProfile extends Component {
               label={ 'Goalie:' }
               value={ ratings.goalie }
           />
+        <View>
+        <Button
+            title="Invite Players"
+            onPress={() =>
+              navigate('QrGenerator', {
+                groupId: this.state.groupId})
+              }
+            />
+        </View>
+
         </View>
         <View style={styles.checkboxView}>
           <CheckBox

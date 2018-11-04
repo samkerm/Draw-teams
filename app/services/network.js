@@ -30,7 +30,7 @@ export async function Fetch(method, url, body) {
             console.log(data);
             return data;
         }
-        return new Error('Wasn\'t able to retriebve stored token locally');
+        return new Error('Wasn\'t able to retrieve stored token locally');
     } catch (error) {
         return error;
     }

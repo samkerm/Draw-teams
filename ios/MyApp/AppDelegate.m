@@ -11,9 +11,12 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+<<<<<<< HEAD
+=======
 #import <React/RCTPushNotificationManager.h>
 #import <Firebase.h>
 #import "RNFirebaseLinks.h"
+>>>>>>> dev
 
 @implementation AppDelegate
 
@@ -40,6 +43,8 @@
   return YES;
 }
 
+<<<<<<< HEAD
+=======
 // Required to register for notifications
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
@@ -88,4 +93,5 @@ continueUserActivity:(NSUserActivity *)userActivity
   return [[RNFirebaseLinks instance] application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
 }
 
+>>>>>>> dev
 @end

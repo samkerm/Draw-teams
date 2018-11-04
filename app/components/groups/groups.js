@@ -186,6 +186,7 @@ export default class Groups extends Component {
           results={app.state.foundGroups}
           selectedGroup={groupId => app.joinGroup(groupId)}
           toggleGroup={app.toggleGroup}
+          navigation={this.props.navigation}
           >
         </JoinGroup>
       );
