@@ -38,7 +38,7 @@
 		4DAC63D0447647E2A9582FC6 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B02F96EA9E6347ADA87931C9 /* Foundation.ttf */; };
 		538613282019A2680077A260 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 538613122019A22A0077A260 /* libRCTCameraRoll.a */; };
 		53B1732D20871CE1005B3647 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B9EAF92071B68B007966C3 /* libRCTPushNotification.a */; };
-		53F550CB211A5D7C003FA602 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */; };
+		53CC804D2133694E006DB1EB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53CC80202133694E006DB1EB /* GoogleService-Info.plist */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -397,7 +397,7 @@
 		538613062019A22A0077A260 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		53B9EAF22071B587007966C3 /* MyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MyApp.entitlements; path = MyApp/MyApp.entitlements; sourceTree = "<group>"; };
 		53B9EAF32071B68B007966C3 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
-		53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../samkheirandish/Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		53CC80202133694E006DB1EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		57FE6A3FAD964F1BB6348B85 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		764F8A6E75EE4088861AC433 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
@@ -447,14 +447,11 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-<<<<<<< HEAD
-=======
 				ED5A125FAAFD4937B2E6BDA9 /* libRNVectorIcons.a in Frameworks */,
 				6C808578B9D7406E8591AAE2 /* libRNImagePicker.a in Frameworks */,
 				F100FBBAA52F48059CD51105 /* libRNFetchBlob.a in Frameworks */,
 				D9C4646874AA45FDBDD6EEEF /* libRNFirebase.a in Frameworks */,
 				DF519FB04656F30E6963AD13 /* libPods-MyApp.a in Frameworks */,
->>>>>>> dev
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,7 +567,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				53F550CA211A5D7C003FA602 /* GoogleService-Info.plist */,
+				53CC80202133694E006DB1EB /* GoogleService-Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -587,14 +584,8 @@
 				3DAD3EAB1DF850E9000B6D8A /* libcxxreact.a */,
 				3DAD3EAD1DF850E9000B6D8A /* libjschelpers.a */,
 				3DAD3EAF1DF850E9000B6D8A /* libjschelpers.a */,
-<<<<<<< HEAD
-<<<<<<< HEAD
-				3DAD3EA31DF850E9000B6D8A /* libReact-tvOS.a */,
-=======
-=======
 				53476FF82123C838003F6273 /* libjsinspector.a */,
 				53476FFA2123C838003F6273 /* libjsinspector-tvOS.a */,
->>>>>>> dev
 				53B9EAE72071B53E007966C3 /* libthird-party.a */,
 				53B9EAE92071B53E007966C3 /* libthird-party.a */,
 				53B9EAEB2071B53E007966C3 /* libdouble-conversion.a */,
@@ -707,13 +698,10 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-<<<<<<< HEAD
-=======
 				4C34F7486AE343C3AECD79BC /* RNVectorIcons.xcodeproj */,
 				D3FD96FFD1254C58889A832C /* RNImagePicker.xcodeproj */,
 				57FE6A3FAD964F1BB6348B85 /* RNFetchBlob.xcodeproj */,
 				2BDEE236363844DDA56ADFD7 /* RNFirebase.xcodeproj */,
->>>>>>> dev
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -734,13 +722,10 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MyAppTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
-<<<<<<< HEAD
-=======
 				538613272019A2680077A260 /* Frameworks */,
 				736435CD380F4219B48F3D58 /* Resources */,
 				538B4DB72095028100BE5966 /* Recovered References */,
 				D34B7F3445E956A77E460754 /* Pods */,
->>>>>>> dev
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -868,10 +853,6 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-<<<<<<< HEAD
-						DevelopmentTeam = RV3QF7DAL9;
-						ProvisioningStyle = Automatic;
-=======
 						DevelopmentTeam = 5EL7YNNLPR;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -884,7 +865,6 @@
 								enabled = 1;
 							};
 						};
->>>>>>> dev
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -957,8 +937,6 @@
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
-<<<<<<< HEAD
-=======
 				{
 					ProductGroup = 53F55012211A5766003FA602 /* Products */;
 					ProjectRef = 57FE6A3FAD964F1BB6348B85 /* RNFetchBlob.xcodeproj */;
@@ -975,7 +953,6 @@
 					ProductGroup = 538B4DDE2095028200BE5966 /* Products */;
 					ProjectRef = 4C34F7486AE343C3AECD79BC /* RNVectorIcons.xcodeproj */;
 				},
->>>>>>> dev
 			);
 			projectRoot = "";
 			targets = (
@@ -1135,9 +1112,6 @@
 			remoteRef = 3DAD3EAE1DF850E9000B6D8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-<<<<<<< HEAD
-		50341E50210696AE00338A14 /* libRCTBlob-tvOS.a */ = {
-=======
 		53476FF82123C838003F6273 /* libjsinspector.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1153,7 +1127,6 @@
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5386130F2019A22A0077A260 /* libRCTBlob-tvOS.a */ = {
->>>>>>> dev
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = "libRCTBlob-tvOS.a";
@@ -1239,8 +1212,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-<<<<<<< HEAD
-=======
+				53CC804D2133694E006DB1EB /* GoogleService-Info.plist in Resources */,
 				42C40A3C11014F50B2B643D4 /* Entypo.ttf in Resources */,
 				DC78480FFAE64DBAB97B5099 /* EvilIcons.ttf in Resources */,
 				8C968D286B884914A2C46D40 /* Feather.ttf in Resources */,
@@ -1253,7 +1225,6 @@
 				C7A94A24207E4F9683817E39 /* SimpleLineIcons.ttf in Resources */,
 				8A5A6A69997D4CCDA86BA5DA /* Zocial.ttf in Resources */,
 				53F550CB211A5D7C003FA602 /* GoogleService-Info.plist in Resources */,
->>>>>>> dev
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1413,11 +1384,6 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-<<<<<<< HEAD
-				INFOPLIST_FILE = MyAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-=======
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1435,7 +1401,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1450,12 +1415,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = RV3QF7DAL9;
-				INFOPLIST_FILE = MyAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-=======
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1473,7 +1432,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1492,9 +1450,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = RV3QF7DAL9;
-=======
 				DEVELOPMENT_TEAM = 5EL7YNNLPR;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1503,7 +1458,6 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
->>>>>>> dev
 				INFOPLIST_FILE = MyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1526,9 +1480,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = RV3QF7DAL9;
-=======
 				DEVELOPMENT_TEAM = 5EL7YNNLPR;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1537,7 +1488,6 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
->>>>>>> dev
 				INFOPLIST_FILE = MyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1564,10 +1514,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-<<<<<<< HEAD
-				INFOPLIST_FILE = "MyApp-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-=======
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1584,7 +1530,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1609,10 +1554,6 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-<<<<<<< HEAD
-				INFOPLIST_FILE = "MyApp-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-=======
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1629,7 +1570,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1655,8 +1595,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "MyApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-<<<<<<< HEAD
-=======
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1664,7 +1602,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.MyApp-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1686,8 +1623,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "MyApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-<<<<<<< HEAD
-=======
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1695,7 +1630,6 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
->>>>>>> dev
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.MyApp-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;

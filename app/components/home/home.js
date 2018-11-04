@@ -8,21 +8,16 @@ import {
   Image,
   BackHandler,
   SectionList,
-  ListItem,
-  AsyncStorage,
-  ActivityIndicator
+  AppState,
+  ActivityIndicator,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { NavigationActions } from 'react-navigation';
-import { StackNavigator } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
 
 import Button from '../global/button';
-import Groups from '../groups/groups';
-import NextGame from './nextGame';
 import { Fetch } from '../../services/network';
 import { Random } from '../../services/utilities';
 
@@ -60,6 +55,7 @@ export default class Home extends Component {
     super();
     const user = firebase.auth().currentUser;
     this.state = {
+      appState: AppState.currentState,
       userId: user.uid,
       group: {},
       displayName: '',
@@ -70,22 +66,38 @@ export default class Home extends Component {
       rsvpNA: true,
       rsvpNo: false,
       rsvpYes: false,
+      topSectionHeader: 'Regulars',
+      bottomSectionHeader: 'Reserves',
+      tableTopSection: [],
+      tableBottomSection: []
     };
   }
 
   componentWillMount()
   {
     app = this;
-    app._getGroupInformation();
+    AppState.addEventListener('change', app._handleAppStateChange);
     BackHandler.addEventListener('hardwareBackPress', function() {
       return true;
     });
+    app._getGroupInformation();
   }
 
   componentWillUnmount()
   {
+    AppState.removeEventListener('change', app._handleAppStateChange);
     BackHandler.removeEventListener('hardwareBackPress', function() {
       return false;
+    });
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (app.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      app._getGroupInformation();
+      // TODO: set badge count to 0
+    }
+    app.setState({
+      appState: nextAppState
     });
   }
 
@@ -125,19 +137,39 @@ export default class Home extends Component {
         {
           app.props.navigation.setParams({otherParam: group.name});
 
-          // put together members by their status and present them in a table where you can click on users
-          // and see their status and ranking.
-          if (group.regulars && group.regulars.length > 0) {group.regulars = await app._getInformationForMembers(group.regulars)}
-          if (group.reserves && group.reserves.length > 0) {group.reserves = await app._getInformationForMembers(group.reserves)}
-
           // If group's next game is set and game date is in future update UI
           if (group.nextGame)
           {
-            group.nextGame = group.nextGame;
-            const date = new Date(group.nextGame.gameDate);
-            const gameDate = moment(date);
+            if (group.nextGame.teamA && group.nextGame.teamB)
+            {
+              const tableTopSection = await app._getInformationForMembers(group.nextGame.teamA);
+              const tableBottomSection = await app._getInformationForMembers(group.nextGame.teamB);
+              app.setState({
+                topSectionHeader: 'Team Color',
+                bottomSectionHeader: 'Team White',
+                tableTopSection,
+                tableBottomSection
+              });
+            }
+            else
+            {
+              // put together members by their status and present them in a table where you can click on users
+              // and see their status and ranking.
+              let tableTopSection = [];
+              let tableBottomSection = [];
+              if (group.regulars && group.regulars.length > 0) {tableTopSection = await app._getInformationForMembers(group.regulars)}
+              if (group.reserves && group.reserves.length > 0) {tableBottomSection = await app._getInformationForMembers(group.reserves)}
+              app.setState({
+                topSectionHeader: 'Regulars',
+                bottomSectionHeader: 'Reserves',
+                tableTopSection,
+                tableBottomSection
+              });
+
+            }
+            const gameDate = moment(group.nextGame.gameDate, 'dddd, YYYY-MMM-DD kk:mm');
             const today = moment();
-            if (gameDate.diff(today) > 0) // Game is not in the past so show its details vvvv
+            if (gameDate.diff(today) >= 0) // Game is not in the past so show its details vvvv
             {
               app.setState({ isSetNextGame: true });
               app._updateReceivedRsvp(group.nextGame);
@@ -145,42 +177,46 @@ export default class Home extends Component {
               // Add RSVP data to members
               const rsvpYes = group.nextGame.rsvpYes || [];
               const rsvpNo = group.nextGame.rsvpNo || [];
-              rsvpYes.forEach((yesUser) =>
+              rsvpYes.forEach((userId) =>
               {
-                if (group.regulars && group.regulars.length > 0)
+                if (app.state.tableTopSection.length > 0)
                 {
-                  group.regulars.filter(val => val.userId == yesUser).map((user) =>
+                  app.state.tableTopSection.filter(val => val.userId == userId).map((user) =>
                   {
                     user.rsvp = 'Going';
                     return user;
                   });
                 } 
-                else if (group.reserves && group.reserves.length > 0)
+                if (app.state.tableBottomSection.length > 0)
                 {
-                  group.reserves.filter(val => val.userId == yesUser).map((user) => {
+                  app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
                     user.rsvp = 'Going';
                     return user;
                   });
                 }
               });
-              rsvpNo.forEach((noUser) =>
+              rsvpNo.forEach((userId) =>
               {
-                if (group.regulars && group.regulars.length > 0)
+                if (app.state.tableTopSection.length > 0)
                 {
-                  group.regulars.filter(val => val.userId == noUser).map((user) =>
+                  app.state.tableTopSection.filter(val => val.userId == userId).map((user) =>
                   {
                     user.rsvp = 'Not Going';
                     return user;
                   });
                 } 
-                else if (group.reserves && group.reserves.length > 0)
+                if (app.state.tableBottomSection.length > 0)
                 {
-                  group.reserves.filter(val => val.userId == noUser).map((user) => {
+                  app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
                     user.rsvp = 'Not Going';
                     return user;
                   });
                 }
               });
+            }
+            else
+            {
+              app.setState({ isSetNextGame: false });
             }
           }
           app.setState({group}); // Group exists update UI
@@ -238,7 +274,7 @@ export default class Home extends Component {
   {
     app.setState({ isSyncingData: true});
     try {
-      const rsvp = await Fetch('POST', `/groups/${this.state.groupId}/rsvp`, {rsvp: status});
+      const rsvp = await Fetch('POST', `/groups/${app.state.groupId}/rsvp`, {rsvp: status});
       app._setRsvpTo(rsvp.status);
       app._getGroupInformation();
     } catch (error) {
@@ -418,12 +454,12 @@ export default class Home extends Component {
           app.state.isSyncingData ? 'none' : 'auto'
         } >
         <SectionList
-          renderItem={({item}) => this._renderSectionItem(item)}
+          renderItem={({item}) => app._renderSectionItem(item)}
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
           sections={[ // homogeneous rendering between sections
-            {data: [app.state.group.regulars], title: 'Regulars'},
-            {data: [app.state.group.reserves], title: 'Reserves'},
+            {data: [app.state.tableTopSection], title: app.state.topSectionHeader},
+            {data: [app.state.tableBottomSection], title: app.state.bottomSectionHeader},
           ]}
           />
         { app.renderFooter() }
