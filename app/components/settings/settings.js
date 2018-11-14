@@ -67,15 +67,15 @@ export default class Settings extends Component {
 
   constructor(props) {
     super(props);
-    const {params} = props.navigation.state;
+    const { params } = props && props.navigation && props.navigation.state;
 
     this.state = {
       isUploadingImage: false,
-      userId: params.userId,
-      user: params.user,
-      displayName: params.displayName,
-      profileImageData: params.user.profileImageData,
-      group: params.group,
+      userId: params && params.userId,
+      user: params && params.user,
+      displayName: params && params.displayName,
+      profileImageData: params && params.user && params.user.profileImageData,
+      group: params && params.group,
       isRegular: false,
       isReserve: false
     };

@@ -50,11 +50,11 @@ export default class MemberProfile extends Component {
     const {params} = props.navigation.state;
 
     this.state = {
-      userId: params.userId,
-      user: params.user,
-      displayName: params.displayName,
-      profileImageData: params.user.profileImageData,
-      group: params.group,
+      userId: params && params.userId,
+      user: params && params.user,
+      displayName: params && params.displayName,
+      profileImageData: params && params.user && params.user.profileImageData,
+      group: params && params.group,
       isRegular: false,
       isReserve: false
     };
