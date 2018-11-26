@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
-import RNFetchBlob from 'react-native-fetch-blob';
+import RNFetchBlob from 'rn-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
 import DeviceInfo from 'react-native-device-info';
