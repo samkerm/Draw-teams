@@ -17,7 +17,7 @@ import { CheckBox } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
-
+import DeviceInfo from 'react-native-device-info';
 import Button from '../global/button';
 import { Fetch } from '../../services/network';
 import { Random } from '../../services/utilities';
@@ -149,7 +149,7 @@ export default class Home extends Component {
       if (message && message._data && message._data.groupUpdated && message._data.groupUpdated === '1')
       {
         // Group information was updated. Update UI.
-        app._getGroupInformation();
+        if (!DeviceInfo.isEmulator()) app._getGroupInformation();
       }
     });
   }
