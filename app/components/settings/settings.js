@@ -13,7 +13,7 @@ import { CheckBox } from 'react-native-elements';
 
 import RatingStars from '../global/ratingstars';
 import { Fetch } from '../../services/network';
-import RNFetchBlob from 'rn-fetch-blob';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const ImagePicker = require('react-native-image-picker');
 const storage = firebase.storage();
