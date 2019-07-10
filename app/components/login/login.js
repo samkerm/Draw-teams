@@ -42,6 +42,19 @@ export default class Login extends Component {
       {
         app.setState({ authenticating: false});
         await RegisterWithToken();
+        // Request users permissions to send push notifications.
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+          // user has permissions
+        } else {
+          // user doesn't have permission
+          try {
+            await firebase.messaging().requestPermission();
+            // User has authorised
+          } catch (error) {
+            // User has rejected permissions
+          }
+        }
         this.onTokenRefreshListener = firebase.messaging().onTokenRefresh( async fcmToken => {
           console.log('Received fcmToken from device: ', fcmToken);
           try {

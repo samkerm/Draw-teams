@@ -1,8 +1,8 @@
 import { AsyncStorage } from 'react-native';
 import firebase from 'react-native-firebase';
 
-const baseURL = 'http://localhost:5000/draw-teams/us-central1/app';
-// const baseURL = 'https://us-central1-draw-teams.cloudfunctions.net/app';
+// const baseURL = 'http://localhost:5000/draw-teams/us-central1/app';
+const baseURL = 'https://us-central1-draw-teams.cloudfunctions.net/app';
 
 
 export async function RegisterWithToken() {
@@ -11,9 +11,9 @@ export async function RegisterWithToken() {
         await AsyncStorage.setItem('@FirebaseToken:key', idToken);
         console.log(idToken);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
-};
+}
 
 export async function Fetch(method, url, body) {
     try {

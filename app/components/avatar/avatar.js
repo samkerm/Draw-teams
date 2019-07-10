@@ -161,7 +161,7 @@ export default class Avatar extends Component {
       })
       .catch((error) => {
         app.setState({ isUploadingImage: false });
-        console.error(error);
+        console.log(error);
       })
       app.props.navigation.navigate('Home');
   }

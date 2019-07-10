@@ -10,13 +10,14 @@ import {
   SectionList,
   AppState,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import _ from 'lodash';
 import moment from 'moment';
-
+import DeviceInfo from 'react-native-device-info';
 import Button from '../global/button';
 import { Fetch } from '../../services/network';
 import { Random } from '../../services/utilities';
@@ -69,7 +70,8 @@ export default class Home extends Component {
       topSectionHeader: 'Regulars',
       bottomSectionHeader: 'Reserves',
       tableTopSection: [],
-      tableBottomSection: []
+      tableBottomSection: [],
+      isAlertShowing: false
     };
   }
 
@@ -81,6 +83,8 @@ export default class Home extends Component {
       return true;
     });
     app._getGroupInformation();
+    // app._checkPermission();
+    app._createNotificationListeners();
   }
 
   componentWillUnmount()
@@ -89,6 +93,8 @@ export default class Home extends Component {
     BackHandler.removeEventListener('hardwareBackPress', function() {
       return false;
     });
+    // app._notificationListener();
+    // app._notificationOpenedListener();
   }
 
   _handleAppStateChange = (nextAppState) => {
@@ -96,9 +102,116 @@ export default class Home extends Component {
       app._getGroupInformation();
       // TODO: set badge count to 0
     }
-    app.setState({
-      appState: nextAppState
+    app.setState({appState: nextAppState});
+  }
+
+  async _createNotificationListeners() {
+    /*
+    * Triggered when a particular notification has been received in foreground
+    * */
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      const {
+        title,
+        body
+      } = notification;
+      this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
     });
+
+    /*
+    * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+    * */
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+      const {
+        title,
+        body
+      } = notificationOpen.notification;
+      this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
+    });
+
+    /*
+    * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+    * */
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+      const {
+        title,
+        body
+      } = notificationOpen.notification;
+      this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
+    }
+    /*
+    * Triggered for data only payload in foreground
+    * */
+    this.messageListener = firebase.messaging().onMessage((message) => {
+      if (message && message._data && message._data.groupUpdated && message._data.groupUpdated === '1')
+      {
+        // Group information was updated. Update UI.
+        this.showAlert('Group was updated!', 'Group information has been updated.');
+        app.setState({isAlertShowing: true});
+      }
+    });
+  }
+
+  showAlert(title, body) {
+    if (!app.state.isAlertShowing)
+    {
+      Alert.alert(
+        title, body,
+        [{
+          text: 'OK',
+          onPress: () => {
+            app.setState({
+              isAlertShowing: false
+            })
+            app._getGroupInformation()
+          }
+        }, ], {
+          cancelable: false
+        },
+      );
+    }
+  }
+
+  async _getRegularsAndReserves(group)
+  {
+    app.setState({ isSyncingData: true});
+    // put together members by their status and present them in a table where you can click on users
+    // and see their status and ranking.
+    let tableTopSection = [];
+    let tableBottomSection = [];
+    if (group.regulars && group.regulars.length > 0) {
+      tableTopSection = await app._getInformationForMembers(group.regulars)
+    }
+    if (group.reserves && group.reserves.length > 0) {
+      tableBottomSection = await app._getInformationForMembers(group.reserves)
+    }
+    app.setState({
+      topSectionHeader: 'Regulars',
+      bottomSectionHeader: 'Reserves',
+      tableTopSection,
+      tableBottomSection,
+      isSyncingData: false
+    });
+
+    if (app.state.isSetNextGame) app._updateIndividualMembersRsvp(group);
+  }
+
+  async _getTeams(group) {
+    app.setState({ isSyncingData: true});
+    const tableTopSection = await app._getInformationForMembers(group.nextGame.teamA);
+    const tableBottomSection = await app._getInformationForMembers(group.nextGame.teamB);
+    app.setState({
+      topSectionHeader: 'Team Color',
+      bottomSectionHeader: 'Team White',
+      tableTopSection,
+      tableBottomSection,
+      isSyncingData: false
+    });
+
+    if (app.state.isSetNextGame) app._updateIndividualMembersRsvp(group);
   }
 
   async _getGroupInformation()
@@ -106,8 +219,8 @@ export default class Home extends Component {
     app.setState({isSyncingData: true});
     try {
       const currentUserInfo = await Fetch('GET', `/getUserInfo?userId=${app.state.userId}`);
-      const displayName = currentUserInfo.displayName || '';
-      const groupId = currentUserInfo.groupId || '';
+      const displayName = currentUserInfo && currentUserInfo.displayName || '';
+      const groupId = currentUserInfo && currentUserInfo.groupId || '';
 
       // Asyncronously get image data and store in user
       if (currentUserInfo.photoURL !== '')
@@ -140,84 +253,17 @@ export default class Home extends Component {
           // If group's next game is set and game date is in future update UI
           if (group.nextGame)
           {
-            if (group.nextGame.teamA && group.nextGame.teamB)
-            {
-              const tableTopSection = await app._getInformationForMembers(group.nextGame.teamA);
-              const tableBottomSection = await app._getInformationForMembers(group.nextGame.teamB);
-              app.setState({
-                topSectionHeader: 'Team Color',
-                bottomSectionHeader: 'Team White',
-                tableTopSection,
-                tableBottomSection
-              });
-            }
-            else
-            {
-              // put together members by their status and present them in a table where you can click on users
-              // and see their status and ranking.
-              let tableTopSection = [];
-              let tableBottomSection = [];
-              if (group.regulars && group.regulars.length > 0) {tableTopSection = await app._getInformationForMembers(group.regulars)}
-              if (group.reserves && group.reserves.length > 0) {tableBottomSection = await app._getInformationForMembers(group.reserves)}
-              app.setState({
-                topSectionHeader: 'Regulars',
-                bottomSectionHeader: 'Reserves',
-                tableTopSection,
-                tableBottomSection
-              });
-
-            }
             const gameDate = moment(group.nextGame.gameDate, 'dddd, YYYY-MMM-DD kk:mm');
             const today = moment();
-            if (gameDate.diff(today) >= 0) // Game is not in the past so show its details vvvv
-            {
-              app.setState({ isSetNextGame: true });
-              app._updateReceivedRsvp(group.nextGame);
-
-              // Add RSVP data to members
-              const rsvpYes = group.nextGame.rsvpYes || [];
-              const rsvpNo = group.nextGame.rsvpNo || [];
-              rsvpYes.forEach((userId) =>
-              {
-                if (app.state.tableTopSection.length > 0)
-                {
-                  app.state.tableTopSection.filter(val => val.userId == userId).map((user) =>
-                  {
-                    user.rsvp = 'Going';
-                    return user;
-                  });
-                } 
-                if (app.state.tableBottomSection.length > 0)
-                {
-                  app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
-                    user.rsvp = 'Going';
-                    return user;
-                  });
-                }
-              });
-              rsvpNo.forEach((userId) =>
-              {
-                if (app.state.tableTopSection.length > 0)
-                {
-                  app.state.tableTopSection.filter(val => val.userId == userId).map((user) =>
-                  {
-                    user.rsvp = 'Not Going';
-                    return user;
-                  });
-                } 
-                if (app.state.tableBottomSection.length > 0)
-                {
-                  app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
-                    user.rsvp = 'Not Going';
-                    return user;
-                  });
-                }
-              });
-            }
-            else
-            {
-              app.setState({ isSetNextGame: false });
-            }
+  
+            app._setRsvpTo('NA');
+            app._updateReceivedRsvp(group.nextGame);
+            app.setState({ isSetNextGame: gameDate.diff(today) >= 0 });
+            (group.nextGame.teamA && group.nextGame.teamB && app.state.isSetNextGame) ? app._getTeams(group): app._getRegularsAndReserves(group);
+          }
+          else
+          {
+            app._getRegularsAndReserves(group);
           }
           app.setState({group}); // Group exists update UI
         }
@@ -226,23 +272,84 @@ export default class Home extends Component {
     }
     catch (error)
     {
-      console.error(error);
-      // _logout();
+      app._handleError(error);
     }
+  }
+
+  _updateIndividualMembersRsvp(group)
+  {
+    // Add RSVP data to members
+    const rsvpYes = group && group.nextGame && group.nextGame.rsvpYes || [];
+    const rsvpNo = group && group.nextGame && group.nextGame.rsvpNo || [];
+    const tableTopSection = app.state.tableTopSection;
+    const tableBottomSection = app.state.tableBottomSection;
+
+    rsvpYes.forEach((userId) => {
+      if (app.state.tableTopSection && app.state.tableTopSection.length > 0) {
+        app.state.tableTopSection.filter(val => val.userId == userId).map((user) => {
+          user.rsvp = 'Going';
+          return user;
+        });
+      }
+      if (app.state.tableBottomSection && app.state.tableBottomSection.length > 0) {
+        app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
+          user.rsvp = 'Going';
+          return user;
+        });
+      }
+    });
+    rsvpNo.forEach((userId) => {
+      if (app.state.tableTopSection && app.state.tableTopSection.length > 0) {
+        app.state.tableTopSection.filter(val => val.userId == userId).map((user) => {
+          user.rsvp = 'Not Going';
+          return user;
+        });
+      }
+      if (app.state.tableBottomSection && app.state.tableBottomSection.length > 0) {
+        app.state.tableBottomSection.filter(val => val.userId == userId).map((user) => {
+          user.rsvp = 'Not Going';
+          return user;
+        });
+      }
+    });
+    app.setState({
+      tableTopSection,
+      tableBottomSection
+    });
   }
 
   async _getInformationForMembers(members)
   {
-    const promises = members.map(id => Fetch('GET', `/getUserInfo?userId=${id}`));
-    const updatedMembers = await Promise.all(promises);
-    const photosPromises = updatedMembers.map(m => RNFetchBlob.fetch('GET', m.photoURL));
-    const photos = await Promise.all(photosPromises);
-    return updatedMembers.map((member) =>
+    let updatedMembers;
+    try {
+      app.setState({isSyncingData: true});
+      const promises = members.map(id => Fetch('GET', `/getUserInfo?userId=${id}`));
+      updatedMembers = await Promise.all(promises);
+    }
+    catch (err)
     {
-      const photo = photos.find(val => val.respInfo.redirects[0] === member.photoURL);
-      member.profileImageData = `data:image/jpeg;base64,${photo.base64()}`;
-      return member;
-    });
+      app._handleError(err)      
+      return members
+    }
+    try {
+      const photosPromises = updatedMembers.map(m => RNFetchBlob.fetch('GET', m.photoURL));
+      const photos = await Promise.all(photosPromises);
+      app.setState({isSyncingData: false});
+      return updatedMembers.map((member) =>
+      {
+        const photo = photos.find(val => val.respInfo.redirects[0] === member.photoURL);
+        member.profileImageData = `data:image/jpeg;base64,${photo.base64()}`;
+        return member;
+      });
+    } catch (error) {
+      app._handleError(error);
+    }
+    return members
+  }
+
+  _handleError(error) {
+    console.log(error);
+    app.setState({ isSyncingData: false});
   }
 
   _setUpNextGame()
@@ -278,10 +385,8 @@ export default class Home extends Component {
       app._setRsvpTo(rsvp.status);
       app._getGroupInformation();
     } catch (error) {
-      console.error(error);
-      // TODO: Show alert
+      app._handleError(error);
     }
-    app.setState({ isSyncingData: false});
   }
 
   _setRsvpTo(status) {

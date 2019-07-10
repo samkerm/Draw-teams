@@ -67,15 +67,15 @@ export default class Settings extends Component {
 
   constructor(props) {
     super(props);
-    const {params} = props.navigation.state;
+    const { params } = props && props.navigation && props.navigation.state;
 
     this.state = {
       isUploadingImage: false,
-      userId: params.userId,
-      user: params.user,
-      displayName: params.displayName,
-      profileImageData: params.user.profileImageData,
-      group: params.group,
+      userId: params && params.userId,
+      user: params && params.user,
+      displayName: params && params.displayName,
+      profileImageData: params && params.user && params.user.profileImageData,
+      group: params && params.group,
       isRegular: false,
       isReserve: false
     };
@@ -180,7 +180,7 @@ export default class Settings extends Component {
               isUploadingImage: false,
               profileImageData: tempImage,
             });
-            console.error(error);
+            console.log(error);
           })
           // app.props.navigation.navigate('Home');
       }
@@ -206,7 +206,7 @@ export default class Settings extends Component {
       console.log(group);
       app._findOutUserStatus(group);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 

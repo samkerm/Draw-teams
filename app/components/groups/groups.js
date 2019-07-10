@@ -108,7 +108,7 @@ export default class Groups extends Component {
       catch (error)
       {
         app.showFirebaseAlert('Group creation failed', error.message);
-        console.error(error);
+        console.log(error);
       }
     }
     else
@@ -132,7 +132,7 @@ export default class Groups extends Component {
       }
       catch (e)
       {
-        console.error(e);
+        console.log(e);
       }
     }
   }
