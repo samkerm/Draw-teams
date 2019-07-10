@@ -11,7 +11,7 @@ export async function RegisterWithToken() {
         await AsyncStorage.setItem('@FirebaseToken:key', idToken);
         console.log(idToken);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 }
 

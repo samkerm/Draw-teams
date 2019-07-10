@@ -180,7 +180,7 @@ export default class Settings extends Component {
               isUploadingImage: false,
               profileImageData: tempImage,
             });
-            console.error(error);
+            console.log(error);
           })
           // app.props.navigation.navigate('Home');
       }
@@ -206,7 +206,7 @@ export default class Settings extends Component {
       console.log(group);
       app._findOutUserStatus(group);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 

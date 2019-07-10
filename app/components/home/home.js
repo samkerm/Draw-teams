@@ -70,7 +70,8 @@ export default class Home extends Component {
       topSectionHeader: 'Regulars',
       bottomSectionHeader: 'Reserves',
       tableTopSection: [],
-      tableBottomSection: []
+      tableBottomSection: [],
+      isAlertShowing: false
     };
   }
 
@@ -101,9 +102,7 @@ export default class Home extends Component {
       app._getGroupInformation();
       // TODO: set badge count to 0
     }
-    app.setState({
-      appState: nextAppState
-    });
+    app.setState({appState: nextAppState});
   }
 
   async _createNotificationListeners() {
@@ -115,8 +114,8 @@ export default class Home extends Component {
         title,
         body
       } = notification;
-      app._getGroupInformation();
       this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
     });
 
     /*
@@ -127,8 +126,8 @@ export default class Home extends Component {
         title,
         body
       } = notificationOpen.notification;
-      app._getGroupInformation();
       this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
     });
 
     /*
@@ -141,6 +140,7 @@ export default class Home extends Component {
         body
       } = notificationOpen.notification;
       this.showAlert(title, body);
+      app.setState({isAlertShowing: true});
     }
     /*
     * Triggered for data only payload in foreground
@@ -149,21 +149,30 @@ export default class Home extends Component {
       if (message && message._data && message._data.groupUpdated && message._data.groupUpdated === '1')
       {
         // Group information was updated. Update UI.
-        if (!DeviceInfo.isEmulator()) app._getGroupInformation();
+        this.showAlert('Group was updated!', 'Group information has been updated.');
+        app.setState({isAlertShowing: true});
       }
     });
   }
 
   showAlert(title, body) {
-    Alert.alert(
-      title, body,
-      [{
-        text: 'OK',
-        onPress: () => console.log('OK Pressed')
-      }, ], {
-        cancelable: false
-      },
-    );
+    if (!app.state.isAlertShowing)
+    {
+      Alert.alert(
+        title, body,
+        [{
+          text: 'OK',
+          onPress: () => {
+            app.setState({
+              isAlertShowing: false
+            })
+            app._getGroupInformation()
+          }
+        }, ], {
+          cancelable: false
+        },
+      );
+    }
   }
 
   async _getRegularsAndReserves(group)
@@ -263,16 +272,15 @@ export default class Home extends Component {
     }
     catch (error)
     {
-      console.error(error);
-      // _logout();
+      app._handleError(error);
     }
   }
 
   _updateIndividualMembersRsvp(group)
   {
     // Add RSVP data to members
-    const rsvpYes = group.nextGame.rsvpYes || [];
-    const rsvpNo = group.nextGame.rsvpNo || [];
+    const rsvpYes = group && group.nextGame && group.nextGame.rsvpYes || [];
+    const rsvpNo = group && group.nextGame && group.nextGame.rsvpNo || [];
     const tableTopSection = app.state.tableTopSection;
     const tableBottomSection = app.state.tableBottomSection;
 
@@ -320,7 +328,7 @@ export default class Home extends Component {
     }
     catch (err)
     {
-      console.log(err);
+      app._handleError(err)      
       return members
     }
     try {
@@ -334,9 +342,14 @@ export default class Home extends Component {
         return member;
       });
     } catch (error) {
-      console.log(error);
+      app._handleError(error);
     }
     return members
+  }
+
+  _handleError(error) {
+    console.log(error);
+    app.setState({ isSyncingData: false});
   }
 
   _setUpNextGame()
@@ -372,8 +385,7 @@ export default class Home extends Component {
       app._setRsvpTo(rsvp.status);
       app._getGroupInformation();
     } catch (error) {
-      console.error(error);
-      // TODO: Show alert
+      app._handleError(error);
     }
   }
 

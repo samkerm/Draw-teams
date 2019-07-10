@@ -93,7 +93,7 @@ export default class MemberProfile extends Component {
       console.log(group);
       app._findOutUserStatus(group);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 
